@@ -6,7 +6,17 @@
     <description>Recent content on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 16 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 24 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Safetensors vs GGUF</title>
+      <link>https://learningdeeplearning.com/post/safetensors-vs-gguf/</link>
+      <pubDate>Mon, 24 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/safetensors-vs-gguf/</guid>
+      <description>There are two popular formats found in the wild when getting a Llama 3 model: .safetensors and .gguf extension. Let&amp;rsquo;s get Llama 3 with both formats, analyze them, and perform inference on it (generate some text with it) using the most popular library for each format, covering:
+ Getting Llama 3 from Meta website Converting .pth to .safetensors Safetensors origins Safetensors data format Safetensors inference (with HF&amp;rsquo;s transformers) Converting .safetensors to .</description>
+    </item>
+    
     <item>
       <title>A Heretical Theory No Longer</title>
       <link>https://learningdeeplearning.com/post/a-heretical-theory-no-longer/</link>
