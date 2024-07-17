@@ -1,0 +1,8 @@
+baseURL = 'https://learningdeeplearning.com/'
+languageCode = 'en-us'
+title = 'Learning Deep Learning'
+theme = "hugo-xmin"
+
+[params]
+  logo = "images/logo.png"
+  dateFormat = "Jan 2, 2006" 
