@@ -10,7 +10,6 @@ body {
 .menu li { display: inline-block; }
 .article-meta, .menu a {
   text-decoration: none;
-  background: #eee;
   padding: 5px;
   border-radius: 5px;
 }
