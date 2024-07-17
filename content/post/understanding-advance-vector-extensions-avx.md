@@ -68,7 +68,7 @@ int main() {
 
 Compiling it and executing it:
 
-```sh
+```
 $ gcc -o vector_sum vector_sum.c 
 
 $ ./vector_sum 
@@ -129,7 +129,7 @@ int main() {
 
 Here's the numbers from my Ryzen 5 4600H:
 
-```sh
+```
 $ gcc -o silly_benchmark silly_benchmark.c 
 
 $ ./silly_benchmark
