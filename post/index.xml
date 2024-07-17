@@ -6,7 +6,30 @@
     <description>Recent content in Posts on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 14 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 16 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Heretical Theory No Longer</title>
+      <link>https://learningdeeplearning.com/post/a-heretical-theory-no-longer/</link>
+      <pubDate>Sun, 16 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/a-heretical-theory-no-longer/</guid>
+      <description>When talking about Artificial Intelligence, Turing&amp;rsquo;s name mostly comes due to its &amp;ldquo;Turing Test&amp;rdquo;, which is easily dismissed or even made fun of:
+But Turing thoughts on thinking machines are not as superficial as it may seem at first glance.
+&amp;ldquo;something very close to thinking&amp;rdquo; Back in 1951, Alan Turing gave a presentation arguing against the claim that &amp;ldquo;you cannot make a machine think for you&amp;rdquo;. Titled as &amp;ldquo;A Heretical Theory&amp;rdquo;, it&amp;rsquo;s interesting to see how things changed, what was heretical some decades ago is now what&amp;rsquo;s in vogue.</description>
+    </item>
+    
+    <item>
+      <title>Understanding Advance Vector Extensions (AVX)</title>
+      <link>https://learningdeeplearning.com/post/understanding-advance-vector-extensions-avx/</link>
+      <pubDate>Sat, 15 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/understanding-advance-vector-extensions-avx/</guid>
+      <description>I’ve been playing LLMs locally and an acronym that is a usual suspect on documentation pages is &amp;ldquo;AVX&amp;rdquo;.
+Advanced Vector Extensions is a SIMD extension to x86 architecture. Well, that’s what Wikipedia says anyway.
+Let’s get into this rabbit hole and figure out how AVX relates to LLMs.
+Single Instruction, Multiple Data (SIMD) “Single Instruction, Multiple Data” is one of the best self-explanatory acronyms I’ve seen in a while! It&amp;rsquo;s pretty much what it says, performing a single instruction with a big set of registers:</description>
+    </item>
+    
     <item>
       <title>Running custom GGUF models with Ollama</title>
       <link>https://learningdeeplearning.com/post/running-custom-gguf-models-with-ollama/</link>
