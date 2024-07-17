@@ -6,14 +6,15 @@
     <description>Recent content in Posts on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Jul 2024 12:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 14 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>First Post</title>
-      <link>https://learningdeeplearning.com/post/first-post/</link>
-      <pubDate>Tue, 16 Jul 2024 12:00:00 +0000</pubDate>
+      <title>Running custom GGUF models with Ollama</title>
+      <link>https://learningdeeplearning.com/post/running-custom-gguf-models-with-ollama/</link>
+      <pubDate>Fri, 14 Jun 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://learningdeeplearning.com/post/first-post/</guid>
-      <description>My First Post Welcome to my new blog! This is my first post.</description>
+      <guid>https://learningdeeplearning.com/post/running-custom-gguf-models-with-ollama/</guid>
+      <description>Ollama is a convenient tool, with a single command it takes care of downloading, running, and putting you on a prompt:
+$ ollama run llama3 pulling manifest pulling 6a0746a1ec1a... 100% ▕████████▏ 4.7 GB pulling 4fa551d4f938... 100% ▕████████▏ 12 KB pulling 8ab4849b038c... 100% ▕████████▏ 254 B pulling 577073ffcc6c... 100% ▕████████▏ 110 B pulling 3f8eb4da87fa... 100% ▕████████▏ 485 B verifying sha256 digest writing manifest removing any unused layers success &amp;gt;&amp;gt;&amp;gt; hello there Hello!</description>
     </item>
     
   </channel>
