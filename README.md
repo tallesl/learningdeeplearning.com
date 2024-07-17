@@ -1,1 +1,1 @@
-[learningdeeplearning.com](learningdeeplearning.com)
+[learningdeeplearning.com](https://learningdeeplearning.com)
