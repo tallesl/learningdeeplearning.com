@@ -17,8 +17,7 @@ body {
 .title { font-size: 1.1em; }
 footer a { text-decoration: none; }
 hr {
-  border-style: dashed;
-  color: #ddd;
+  color: #8e8;
 }
 
 /* code */
