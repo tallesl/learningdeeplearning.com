@@ -63,7 +63,7 @@ $ vblank_mode=0 glxgears -info
 
 ![](/images/deep-learning-on-rx7600-ubuntu-22-04/glxgears.png)
 
-The "vblank_mode=0" variable disables vsync, allowing glxgears to run free from syncing it with the display refresh rate.
+The **"vblank_mode=0"** variable disables vsync, allowing glxgears to run free from syncing it with the display refresh rate.
 
 We can see activity on the GPU, but no spinning fan. Let's try with glmark2:
 
