@@ -8,17 +8,19 @@ date: 2024-07-19
 The graphics processor consumer market is no longer dominated by the two-brand dispute of NVIDIA's GeForce vs AMD's
 Radeon. In 2022, a third contender entered the ring: Intel's Arc.
 
-It is still a relatively unknown option to most desktop enthusiasts, which may explain why it is priced lower than its competitors as of now. For folks like me, who are trying to get as much VRAM as possible on a budget, it's simply hard to dismiss it.
+It is still a relatively unknown option to most desktop enthusiasts, which may explain why it is priced lower than its
+competitors. For folks like me, trying to get as much VRAM as possible on a budget, is hard to dismiss.
 
-But in a world in which NVIDIA is the de facto standard and its seasoned AMD rival is struggling to make a dent, will the support for Intel GPUs be there?
+But in a world where NVIDIA is the de facto standard and its seasoned AMD rival is struggling to make a dent, will the
+support for Intel GPUs be there?
 
 Are the drivers stable enough? Are the open-source project maintainers making the effort to support it? Let's find out.
 
 ## Downloading and Setting Up Drivers
 
-A pleasant surprise here, there is no need to edit configuration files or to install any package, there's out of the
-box support for it with the latest Linux kernel. The support is lackluster though: I couldn't get fan speed nor
-temperature sensors to work ([someone already asked for it](https://gitlab.freedesktop.org/drm/i915/kernel/-/issues/11276)).
+A pleasant surprise here, there is no need to edit configuration files or install any package, there's out-of-the-box
+support for it with the latest Linux kernel. The support is lackluster though: I couldn't get fan speed or temperature
+sensors to work ([someone already asked for it](https://gitlab.freedesktop.org/drm/i915/kernel/-/issues/11276)).
 
 ## Checking GPU Usage
 
@@ -46,7 +48,7 @@ We can see activity on the GPU, but I didn't make my card fans spin. Let's try w
 
 ![](/images/deep-learning-on-arc-a770-ubuntu-22-04/glmark2.png)
 
-That manage to get the GPU fan to spin.
+That managed to get the GPU fan to spin.
 
 ## Ollama
 
@@ -57,7 +59,7 @@ and RX 7600 respectively).
 Fingers crossed for the [merge request that I found adding support for Intel Arc](https://github.com/ollama/ollama/pull/2458)
 to get merged soon.
 
-Intel provides a custom Docker image (with custom scripts inside of it) for running Ollama, but I didn't have much
+Intel provides a custom Docker image (with custom scripts inside) for running Ollama, but I didn't have much
 luck with it either.
 
 Pulling `intelanalytics/ipex-llm-inference-cpp-xpu` image and running a container from it:
@@ -68,13 +70,13 @@ $ docker run -it --rm --net host --device /dev/dri --privileged --memory 32gb --
 
 Argument            | Description
 --------            | -----------
-`-it`               | Starts an interactive terminal session in the Docker container.
-`--rm`              | Automatically removes the container and its filesystem after it exits.
-`--net host`        | Uses the host network stack.
-`--device /dev/dri` | Grants the container access to the Direct Rendering Infrastructure (DRI) devices on the host.
-`--privileged`      | Gives extended privileges to the container, such as accessing all devices on the host system
-`--memory 32gb`     | Limits the memory usage of the container to 32 GB.
-`--shm-size 16gb`   | shm stands for shared memory, `/dev/shm` is 64 MB by default, which is little for applications with large datasets or heavy inter-process communication.
+`-it`               | starts an interactive terminal session in the Docker container
+`--rm`              | automatically removes the container and its filesystem after it exits
+`--net host`        | uses the host network stack
+`--device /dev/dri` | grants the container access to the Direct Rendering Infrastructure (DRI) devices on the host
+`--privileged`      | gives extended privileges to the container, such as accessing all devices on the host system
+`--memory 32gb`     | limits the memory usage of the container to 32 GB
+`--shm-size 16gb`   | "shm" stands for shared memory, `/dev/shm` is 64 MB by default, which is little for applications with large datasets or heavy inter-process communication
 
 Inside the container:
 
@@ -90,7 +92,7 @@ Then the error:
 Error: llama runner process has terminated: signal: bus error (core dumped) 
 ```
 
-Unfortunately I gave up running Ollama on it for now.
+Unfortunately, I gave up running Ollama on it for now.
 
 
 ## PyTorch
@@ -101,7 +103,7 @@ Following Intel's official documentation, we get this for installing the package
 $ pip install torch==2.1.0a0 intel-extension-for-pytorch==2.1.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
 ```
 
-And a error right after importing the package:
+And an error right after importing the package:
 
 ```
 $ python3
@@ -113,7 +115,7 @@ Traceback (most recent call last):
 OSError: libmkl_intel_lp64.so.2: cannot open shared object file: No such file or directory
 ```
 
-Once again, let's resort to a Intel-provided Docker image:
+Once again, let's resort to an Intel-provided Docker image:
 
 ```
 $ docker run -it --rm --device /dev/dri -v /dev/dri/by-path:/dev/dri/by-path --ipc=host intel/intel-extension-for-pytorch:2.1.30-xpu
