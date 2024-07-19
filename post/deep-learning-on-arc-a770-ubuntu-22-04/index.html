@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deep Learning on Arc A770 &#43; Ubuntu 22.04 | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+</style>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Deep Learning on Arc A770 + Ubuntu 22.04</span></h1>
+
+<p class="date">Jul 19, 2024</p>
+</div>
+
+<main>
+<p><img src="/images/deep-learning-on-arc-a770-ubuntu-22-04/arc-a770.png" alt=""></p>
+<p>The graphics processor consumer market is no longer dominated by the two-brand dispute of NVIDIA&rsquo;s GeForce vs AMD&rsquo;s
+Radeon. In 2022, a third contender entered the ring: Intel&rsquo;s Arc.</p>
+<p>It is still a relatively unknown option to most desktop enthusiasts, which may explain why it is priced lower than its competitors as of now. For folks like me, who are trying to get as much VRAM as possible on a budget, it&rsquo;s simply hard to dismiss it.</p>
+<p>But in a world in which NVIDIA is the de facto standard and its seasoned AMD rival is struggling to make a dent, will the support for Intel GPUs be there?</p>
+<p>Are the drivers stable enough? Are the open-source project maintainers making the effort to support it? Let&rsquo;s find out.</p>
+<h2 id="downloading-and-setting-up-drivers">Downloading and Setting Up Drivers</h2>
+<p>A pleasant surprise here, there is no need to edit configuration files or to install any package, there&rsquo;s out of the
+box support for it with the latest Linux kernel. The support is lackluster though: I couldn&rsquo;t get fan speed nor
+temperature sensors to work (<a href="https://gitlab.freedesktop.org/drm/i915/kernel/-/issues/11276">someone already asked for it</a>).</p>
+<h2 id="checking-gpu-usage">Checking GPU Usage</h2>
+<p>To make sure the GPU is working properly and to check its performance, we are going to install:</p>
+<pre tabindex="0"><code>$ sudo apt install intel-gpu-tools
+
+$ sudo apt install mesa-utils
+</code></pre><p>Now let&rsquo;s fire glxgears while watching the GPU activity:</p>
+<pre tabindex="0"><code>$ sudo intel_gpu_top
+
+$ vblank_mode=0 glxgears -info
+</code></pre><p><img src="/images/deep-learning-on-arc-a770-ubuntu-22-04/glxgears.png" alt=""></p>
+<p>The <strong>“vblank_mode=0”</strong> variable disables vsync, allowing glxgears to run free from syncing it with the display refresh rate.</p>
+<p>We can see activity on the GPU, but I didn&rsquo;t make my card fans spin. Let&rsquo;s try with glmark2:</p>
+<p><img src="/images/deep-learning-on-arc-a770-ubuntu-22-04/glmark2.png" alt=""></p>
+<p>That manage to get the GPU fan to spin.</p>
+<h2 id="ollama">Ollama</h2>
+<p>After Ollama finished installing, it printed &ldquo;AMD GPU ready&rdquo; and then proceeded to use my Ryzen 5 5500 for
+inference, yielding merely ~13 tokens per second (for comparison, I get ~100 tokens/s and ~75 tokens/s with my RTX 2060
+and RX 7600 respectively).</p>
+<p>Fingers crossed for the <a href="https://github.com/ollama/ollama/pull/2458">merge request that I found adding support for Intel Arc</a>
+to get merged soon.</p>
+<p>Intel provides a custom Docker image (with custom scripts inside of it) for running Ollama, but I didn&rsquo;t have much
+luck with it either.</p>
+<p>Pulling <code>intelanalytics/ipex-llm-inference-cpp-xpu</code> image and running a container from it:</p>
+<pre tabindex="0"><code>$ docker run -it --rm --net host --device /dev/dri --privileged --memory 32gb --shm-size 16gb intelanalytics/ipex-llm-inference-cpp-xpu
+</code></pre><table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-it</code></td>
+<td>Starts an interactive terminal session in the Docker container.</td>
+</tr>
+<tr>
+<td><code>--rm</code></td>
+<td>Automatically removes the container and its filesystem after it exits.</td>
+</tr>
+<tr>
+<td><code>--net host</code></td>
+<td>Uses the host network stack.</td>
+</tr>
+<tr>
+<td><code>--device /dev/dri</code></td>
+<td>Grants the container access to the Direct Rendering Infrastructure (DRI) devices on the host.</td>
+</tr>
+<tr>
+<td><code>--privileged</code></td>
+<td>Gives extended privileges to the container, such as accessing all devices on the host system</td>
+</tr>
+<tr>
+<td><code>--memory 32gb</code></td>
+<td>Limits the memory usage of the container to 32 GB.</td>
+</tr>
+<tr>
+<td><code>--shm-size 16gb</code></td>
+<td>shm stands for shared memory, <code>/dev/shm</code> is 64 MB by default, which is little for applications with large datasets or heavy inter-process communication.</td>
+</tr>
+</tbody>
+</table>
+<p>Inside the container:</p>
+<pre tabindex="0"><code># . ipex-llm-init --gpu --device Arc
+(...)
+# sh /llm/scripts/start-ollama.sh
+</code></pre><p>Then the error:</p>
+<pre tabindex="0"><code>Error: llama runner process has terminated: signal: bus error (core dumped) 
+</code></pre><p>Unfortunately I gave up running Ollama on it for now.</p>
+<h2 id="pytorch">PyTorch</h2>
+<p>Following Intel&rsquo;s official documentation, we get this for installing the package:</p>
+<pre tabindex="0"><code>$ pip install torch==2.1.0a0 intel-extension-for-pytorch==2.1.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+</code></pre><p>And a error right after importing the package:</p>
+<pre tabindex="0"><code>$ python3
+Python 3.10.12 (main, Mar 22 2024, 16:50:05) [GCC 11.4.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import intel_extension_for_pytorch as ipex
+Traceback (most recent call last):
+(...)
+OSError: libmkl_intel_lp64.so.2: cannot open shared object file: No such file or directory
+</code></pre><p>Once again, let&rsquo;s resort to a Intel-provided Docker image:</p>
+<pre tabindex="0"><code>$ docker run -it --rm --device /dev/dri -v /dev/dri/by-path:/dev/dri/by-path --ipc=host intel/intel-extension-for-pytorch:2.1.30-xpu
+</code></pre><p>Inside the container:</p>
+<pre tabindex="0"><code># python3
+&gt;&gt;&gt; import intel_extension_for_tensorflow as ipex
+&gt;&gt;&gt; print(ipex.__version__)
+2.1.30+xpu
+</code></pre><p>Looks OK.</p>
+<h2 id="tensorflow">TensorFlow</h2>
+<p>Following Intel&rsquo;s official documentation, we get this for installing the package:</p>
+<pre tabindex="0"><code>$ pip install intel-extension-for-tensorflow[xpu]
+</code></pre><p>Then the following for checking the installation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> intel_extension_for_tensorflow <span style="color:#66d9ef">as</span> itex
+print(itex<span style="color:#f92672">.</span>__version__)
+</code></pre></div><p>And, of course, it didn&rsquo;t work:</p>
+<pre tabindex="0"><code>tensorflow.python.framework.errors_impl.NotFoundError: libimf.so: cannot open shared object file: No such file or directory
+</code></pre><p>Again, Docker to the rescue:</p>
+<pre tabindex="0"><code>$ docker run -it --rm --device /dev/dri -v /dev/dri/by-path:/dev/dri/by-path --ipc=host intel/intel-extension-for-tensorflow:xpu
+</code></pre><p>While inside the container it seems that it&rsquo;s working as expected:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">&gt;&gt;&gt;</span> print(itex<span style="color:#f92672">.</span>__version__)
+<span style="color:#ae81ff">2.15.0.0</span>
+</code></pre></div><h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://www.rockpapershotgun.com/intels-arc-a770-16gb-graphics-card-reaches-300-in-the-us-as-dx11-performance-rises-by-19-percent">Intel&rsquo;s Arc A770 16GB graphics card reaches $300 in the US, as DX11 performance rises by 19 percent</a></li>
+<li><a href="https://hub.docker.com/u/intel">intel&rsquo;s Profile | Docker Hub</a></li>
+<li><a href="https://hub.docker.com/u/intelanalytics">intelanalytics&rsquo;s Profile | Docker Hub</a></li>
+<li><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/introducing-intel-extension-for-pytorch-for-gpus.html">Introducing the Intel Extension for PyTorch for GPUs</a></li>
+<li><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/introduction-to-intel-extension-for-tensorflow.html">An Easy Introduction to Intel Extension for TensorFlow</a></li>
+</ul>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+

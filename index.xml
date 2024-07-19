@@ -6,7 +6,39 @@
     <description>Recent content on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 24 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 19 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deep Learning on Arc A770 &#43; Ubuntu 22.04</title>
+      <link>https://learningdeeplearning.com/post/deep-learning-on-arc-a770-ubuntu-22-04/</link>
+      <pubDate>Fri, 19 Jul 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/deep-learning-on-arc-a770-ubuntu-22-04/</guid>
+      <description>The graphics processor consumer market is no longer dominated by the two-brand dispute of NVIDIA&amp;rsquo;s GeForce vs AMD&amp;rsquo;s Radeon. In 2022, a third contender entered the ring: Intel&amp;rsquo;s Arc.
+It is still a relatively unknown option to most desktop enthusiasts, which may explain why it is priced lower than its competitors as of now. For folks like me, who are trying to get as much VRAM as possible on a budget, it&amp;rsquo;s simply hard to dismiss it.</description>
+    </item>
+    
+    <item>
+      <title>Deep Learning on RX 7600 &#43; Ubuntu 22.04</title>
+      <link>https://learningdeeplearning.com/post/deep-learning-on-rx7600-ubuntu-22-04/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/deep-learning-on-rx7600-ubuntu-22-04/</guid>
+      <description>When it comes to deep learning, choosing the right hardware is important. It&amp;rsquo;s not ideal for the job, but I already had a budget-friendly RX 7600 video card from AMD. While AMD video cards can be challenging to set up with deep learning tools, I&amp;rsquo;m pleased to report that the situation is improving.
+Note that the RX 7600 is not officially listed in the ROCm (Radeon Open Compute) support list. Despite this, I managed to get everything up and running smoothly on Ubuntu 22.</description>
+    </item>
+    
+    <item>
+      <title>Why GPUs Are Faster Than CPUs</title>
+      <link>https://learningdeeplearning.com/post/why-gpus-are-faster-than-cpus/</link>
+      <pubDate>Sat, 29 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/why-gpus-are-faster-than-cpus/</guid>
+      <description>They are not!
+CPUs typically have higher clock speeds than GPUs. For instance, AMD&amp;rsquo;s Ryzen processors nearly reach 4 GHz, while NVIDIA&amp;rsquo;s GeForce 40 series barely reach 2.5 GHz. Although clock speed is a factor, it&amp;rsquo;s not always the most important aspect of a chip. Often, the capability to handle large volumes of computation simultaneously outweighs the processing speed.
+The answer is straightforward:
+GPUs excel in computing more data per tick of their clock in comparison to CPUs, thanks to their multiple cores and SIMD instructions.</description>
+    </item>
+    
     <item>
       <title>Safetensors vs GGUF</title>
       <link>https://learningdeeplearning.com/post/safetensors-vs-gguf/</link>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deep Learning on RX 7600 &#43; Ubuntu 22.04 | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+</style>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Deep Learning on RX 7600 + Ubuntu 22.04</span></h1>
+
+<p class="date">Jul 3, 2024</p>
+</div>
+
+<main>
+<p><img src="/images/deep-learning-on-rx7600-ubuntu-22-04/rx7600.png" alt=""></p>
+<p>When it comes to deep learning, choosing the right hardware is important. It&rsquo;s not ideal for the job, but I already had
+a budget-friendly RX 7600 video card from AMD. While AMD video cards can be challenging to set up with deep learning
+tools, I&rsquo;m pleased to report that the situation is improving.</p>
+<p>Note that the RX 7600 is not officially listed in the <a href="https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html">ROCm (Radeon Open Compute) support list</a>. Despite this, I managed to get everything up and running smoothly on Ubuntu 22.04.</p>
+<h2 id="downloading-and-setting-up-drivers">Downloading and Setting Up Drivers</h2>
+<p>First, let&rsquo;s download the drivers from the <a href="https://www.amd.com/en/support/linux-drivers">AMD website</a> and then install
+it:</p>
+<pre tabindex="0"><code>$ sudo dpkg -i amdgpu-install_6.1.60103-1_all.deb
+</code></pre><p>Next, set up the drivers for both <strong>&ldquo;graphics&rdquo;</strong> and <strong>&ldquo;rocm&rdquo;</strong> by running:</p>
+<pre tabindex="0"><code>$ sudo amdgpu-install -y --usecase=graphics,rocm
+</code></pre><p>It took a while, and almost 30GB of disk space occupied later, let&rsquo;s add ourselves to the <strong>&ldquo;render&rdquo;</strong> and <strong>&ldquo;video&rdquo;</strong>
+groups:</p>
+<pre tabindex="0"><code>sudo usermod -a -G render,video $LOGNAME
+</code></pre><p>Finally, reboot the system:</p>
+<pre tabindex="0"><code>sudo reboot
+</code></pre><h2 id="checking-gpu-usage">Checking GPU Usage</h2>
+<p>To make sure the GPU is working properly and to check its performance, we are going to install:</p>
+<pre tabindex="0"><code>$ sudo apt install radeontop
+
+$ sudo apt install xsensors
+
+$ sudo apt install mesa-utils
+</code></pre><p>Now let&rsquo;s fire all of them (on different terminals) to see some GPU activity:</p>
+<pre tabindex="0"><code>$ radeontop
+
+$ xsensors
+
+$ vblank_mode=0 glxgears -info
+</code></pre><p><img src="/images/deep-learning-on-rx7600-ubuntu-22-04/glxgears.png" alt=""></p>
+<p>The <strong>&ldquo;vblank_mode=0&rdquo;</strong> variable disables vsync, allowing glxgears to run free from syncing it with the display refresh rate.</p>
+<p>We can see activity on the GPU, but no spinning fan. Let&rsquo;s try with glmark2:</p>
+<p><img src="/images/deep-learning-on-rx7600-ubuntu-22-04/glmark2.png" alt=""></p>
+<p>The fan is still idle. An AAA game did the trick, we can see the fan spinning now:</p>
+<p><img src="/images/deep-learning-on-rx7600-ubuntu-22-04/witcher3.png" alt=""></p>
+<p>All good.</p>
+<h2 id="ollama">Ollama</h2>
+<p><a href="https://ollama.com/blog/amd-preview">Ollama recently announced support for AMD GPUs</a>, and I&rsquo;m glad to report that it
+worked flawlessly without custom configurations. We can see <strong>~80 tokens/s</strong> with <strong>Gemma 2B</strong>:</p>
+<pre tabindex="0"><code>$ ollama run gemma:2b --verbose
+&gt;&gt;&gt; tell me a story
+The old clock tower stood sentinel over the bustling market square. Its weathered face bore the weight of countless stories, each tick and 
+tock telling a tale of its own. One sunny afternoon, a young woman named Luna decided to explore the tower and discover its secrets.
+
+(...)
+
+total duration:       4.531293086s
+load duration:        1.650622ms
+prompt eval count:    31 token(s)
+prompt eval duration: 60.629ms
+prompt eval rate:     511.31 tokens/s
+eval count:           356 token(s)
+eval duration:        4.333277s
+eval rate:            82.15 tokens/s
+</code></pre><h2 id="pytorch">PyTorch</h2>
+<p>To test if PyTorch will run on our GPU, the following script will generate a dummy load, confirming that our GPU is
+indeed being used by PyTorch:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> torch
+<span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+<span style="color:#f92672">import</span> torch.optim <span style="color:#66d9ef">as</span> optim
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_rocm_and_hip</span>():
+    <span style="color:#66d9ef">if</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#f92672">and</span> torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ROCm is enabled. ROCm version: </span><span style="color:#e6db74">{</span>torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+    <span style="color:#66d9ef">elif</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#f92672">and</span> torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+        print(<span style="color:#e6db74">&#34;ROCm is enabled but HIP runtime is not available.&#34;</span>)
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+    <span style="color:#66d9ef">else</span>:
+        print(<span style="color:#e6db74">&#34;ROCm is not enabled.&#34;</span>)
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleNet</span>(nn<span style="color:#f92672">.</span>Module):
+    <span style="color:#66d9ef">def</span> __init__(self):
+        super(SimpleNet, self)<span style="color:#f92672">.</span>__init__()
+        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">50</span>)
+        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
+        self<span style="color:#f92672">.</span>fc3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">1</span>)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc1(x))
+        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc2(x))
+        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc3(x)
+        <span style="color:#66d9ef">return</span> x
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_random_data</span>(batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, device<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cpu&#39;</span>):
+    inputs <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, <span style="color:#ae81ff">10</span>)<span style="color:#f92672">.</span>to(device)
+    targets <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>to(device)
+    <span style="color:#66d9ef">return</span> inputs, targets
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_indefinitely</span>(device):
+    net <span style="color:#f92672">=</span> SimpleNet()<span style="color:#f92672">.</span>to(device)
+    criterion <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>MSELoss()
+    optimizer <span style="color:#f92672">=</span> optim<span style="color:#f92672">.</span>SGD(net<span style="color:#f92672">.</span>parameters(), lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>)
+
+    iteration <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">try</span>:
+        <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+            inputs, targets <span style="color:#f92672">=</span> generate_random_data(device<span style="color:#f92672">=</span>device)
+            optimizer<span style="color:#f92672">.</span>zero_grad()
+            outputs <span style="color:#f92672">=</span> net(inputs)
+            loss <span style="color:#f92672">=</span> criterion(outputs, targets)
+            loss<span style="color:#f92672">.</span>backward()
+            optimizer<span style="color:#f92672">.</span>step()
+
+            <span style="color:#66d9ef">if</span> iteration <span style="color:#f92672">%</span> <span style="color:#ae81ff">10000</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Iteration </span><span style="color:#e6db74">{</span>iteration<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>item()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+
+            iteration <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
+        print(<span style="color:#e6db74">&#34;Training interrupted. Exiting...&#34;</span>)
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;cuda&#39;</span> <span style="color:#66d9ef">if</span> check_rocm_and_hip() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;cpu&#39;</span>
+    train_indefinitely(device)
+</code></pre></div><p>Trying it out:</p>
+<pre tabindex="0"><code>$ python3 -m venv venv
+
+$ source venv/bin/activate
+
+(venv) $ pip install numpy torch --index-url https://download.pytorch.org/whl/rocm6.0
+
+(venv) $ HSA_OVERRIDE_GFX_VERSION=11.0.0 python3 pytorch_rocm_test.py
+ROCm is enabled. ROCm version: 6.0.32830-d62f6a171
+Iteration 0, Loss: 0.8264276385307312
+Iteration 10000, Loss: 0.982790470123291
+Iteration 20000, Loss: 1.1837289333343506
+(...)
+</code></pre><p>It&rsquo;s still unclear why it&rsquo;s needed, but I could only make it work by setting up the environment variable
+<strong>&ldquo;HSA_OVERRIDE_GFX_VERSION&rdquo;</strong> first.</p>
+<h2 id="tensorflow">TensorFlow</h2>
+<p>Here&rsquo;s the dummy load script using TensorFlow instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+<span style="color:#f92672">from</span> tensorflow.keras <span style="color:#f92672">import</span> layers, models, optimizers, losses
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_rocm_and_hip</span>():
+    gpus <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>list_physical_devices(<span style="color:#e6db74">&#39;GPU&#39;</span>)
+    <span style="color:#66d9ef">if</span> gpus:
+        <span style="color:#66d9ef">try</span>:
+            <span style="color:#66d9ef">for</span> gpu <span style="color:#f92672">in</span> gpus:
+                details <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>experimental<span style="color:#f92672">.</span>get_device_details(gpu)
+                <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;hip_version&#39;</span> <span style="color:#f92672">in</span> details:
+                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ROCm is enabled. ROCm version: </span><span style="color:#e6db74">{</span>details[<span style="color:#e6db74">&#39;hip_version&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+            print(<span style="color:#e6db74">&#34;ROCm is enabled but HIP runtime is not available.&#34;</span>)
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">RuntimeError</span> <span style="color:#66d9ef">as</span> e:
+            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error in getting device details: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+    <span style="color:#66d9ef">else</span>:
+        print(<span style="color:#e6db74">&#34;ROCm is not enabled.&#34;</span>)
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleNet</span>(models<span style="color:#f92672">.</span>Model):
+    <span style="color:#66d9ef">def</span> __init__(self):
+        super(SimpleNet, self)<span style="color:#f92672">.</span>__init__()
+        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">50</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>,))
+        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">50</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>)
+        self<span style="color:#f92672">.</span>fc3 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">call</span>(self, inputs):
+        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc1(inputs)
+        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc2(x)
+        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc3(x)
+        <span style="color:#66d9ef">return</span> x
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_random_data</span>(batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>):
+    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal((batch_size, <span style="color:#ae81ff">10</span>))
+    targets <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal((batch_size, <span style="color:#ae81ff">1</span>))
+    <span style="color:#66d9ef">return</span> inputs, targets
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_indefinitely</span>(device):
+    strategy <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>distribute<span style="color:#f92672">.</span>get_strategy()
+    <span style="color:#66d9ef">with</span> strategy<span style="color:#f92672">.</span>scope():
+        net <span style="color:#f92672">=</span> SimpleNet()
+        net<span style="color:#f92672">.</span>build((<span style="color:#66d9ef">None</span>, <span style="color:#ae81ff">10</span>))
+        criterion <span style="color:#f92672">=</span> losses<span style="color:#f92672">.</span>MeanSquaredError(reduction<span style="color:#f92672">=</span>losses<span style="color:#f92672">.</span>Reduction<span style="color:#f92672">.</span>SUM)
+        optimizer <span style="color:#f92672">=</span> optimizers<span style="color:#f92672">.</span>SGD(learning_rate<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>)
+
+        iteration <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        <span style="color:#66d9ef">try</span>:
+            <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+                inputs, targets <span style="color:#f92672">=</span> generate_random_data()
+                <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>GradientTape() <span style="color:#66d9ef">as</span> tape:
+                    outputs <span style="color:#f92672">=</span> net(inputs)
+                    loss <span style="color:#f92672">=</span> criterion(targets, outputs)
+                grads <span style="color:#f92672">=</span> tape<span style="color:#f92672">.</span>gradient(loss, net<span style="color:#f92672">.</span>trainable_variables)
+                optimizer<span style="color:#f92672">.</span>apply_gradients(zip(grads, net<span style="color:#f92672">.</span>trainable_variables))
+
+                <span style="color:#66d9ef">if</span> iteration <span style="color:#f92672">%</span> <span style="color:#ae81ff">10000</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Iteration </span><span style="color:#e6db74">{</span>iteration<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>numpy()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+
+                iteration <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
+            print(<span style="color:#e6db74">&#34;Training interrupted. Exiting...&#34;</span>)
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/GPU:0&#39;</span> <span style="color:#66d9ef">if</span> check_rocm_and_hip() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;/CPU:0&#39;</span>
+    <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>device(device):
+        train_indefinitely(device)
+</code></pre></div><p>Unfortunately, TensorFlow has been trickier than PyTorch, no matter what I tried I couldn&rsquo;t make it work without
+resorting to <a href="https://hub.docker.com/r/rocm/tensorflow">AMD&rsquo;s Docker image</a>:</p>
+<pre tabindex="0"><code>docker run -it --device=/dev/kfd --device=/dev/dri --group-add video -v &quot;$PWD&quot;:/data -e HSA_OVERRIDE_GFX_VERSION=11.0.0 -e TF_CPP_MIN_LOG_LEVEL=1 rocm/tensorflow python3 /data/tensorflow_rocm_test.py
+</code></pre><h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://www.geekawhat.com/best-amd-radeon-rx-7600/">Best AMD Radeon RX 7600 Graphics Cards to Buy in 2024</a></li>
+<li><a href="https://www.amd.com/en/support/linux-drivers">Linux® Drivers for AMD Radeon™ and Radeon PRO™ Graphics</a></li>
+<li><a href="https://ollama.com/blog/amd-preview">Ollama now supports AMD graphics cards</a></li>
+<li><a href="https://discuss.linuxcontainers.org/t/rocm-and-pytorch-on-amd-apu-or-gpu-ai/19743/1">ROCm and PyTorch on AMD APU or GPU (AI)</a></li>
+<li><a href="https://hub.docker.com/r/rocm/tensorflow">rocm/tensorflow - Docker Image</a></li>
+</ul>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+

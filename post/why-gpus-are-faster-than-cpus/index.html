@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Why GPUs Are Faster Than CPUs | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+</style>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Why GPUs Are Faster Than CPUs</span></h1>
+
+<p class="date">Jun 29, 2024</p>
+</div>
+
+<main>
+<p>They are not!</p>
+<p>CPUs typically have higher clock speeds than GPUs. For instance, AMD&rsquo;s Ryzen processors nearly reach 4 GHz, while
+NVIDIA&rsquo;s GeForce 40 series barely reach 2.5 GHz. Although clock speed is a factor, it&rsquo;s not always the most important
+aspect of a chip. Often, the capability to handle large volumes of computation simultaneously outweighs the processing
+speed.</p>
+<p>The answer is straightforward:</p>
+<p>GPUs excel in computing more data per tick of their <strong>clock</strong> in comparison to CPUs, thanks to their multiple <strong>cores</strong>
+and <strong>SIMD</strong> instructions. Initially, custom <strong>shader</strong> programming had to be used for general-purpose computing on
+GPUs, but shortly later it could be made with <strong>CUDA</strong> on NVIDIA&rsquo;s cards.</p>
+<p>In the following sections, let&rsquo;s dive deeper into the highlighted terms (in bold) from the previous paragraph.</p>
+<h2 id="clock">Clock</h2>
+<p><img src="/images/why-gpus-are-faster-than-cpus/clock.png" alt=""></p>
+<p>Every computer depends on a quartz crystal oscillator. Yes, the same &ldquo;quartz&rdquo; we find printed on physical clock
+backgrounds.</p>
+<p>Quartz crystals are <a href="https://en.wikipedia.org/wiki/Piezoelectricity">piezoelectric</a>, which means they have a unique
+property: when electricity is applied to the crystal, it expands, and when it contracts, an electric charge is
+released:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/piezoelectricity.png" alt=""></p>
+<p>When this setup is put in a closed circuit, together with an amplifier for charging up the electric current coming from
+the crystal, we have a reliable ticking clock:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/closed-circuit.png" alt=""></p>
+<p>Modern computers require clocks because they operate as synchronous circuits. Each clock tick synchronizes all circuit
+components, ensuring they advance to the next computation step together.</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/cpu-flames.png" alt=""></p>
+<p>But there&rsquo;s only so much you can go by speeding up the clock. Increasing clock speeds beyond a certain point can lead
+to significant heat generation. Heat can degrade performance, shorten component lifespan, or cause system failures.
+<a href="https://en.wikipedia.org/wiki/Landauer%27s_principle">Landauer&rsquo;s principle</a> states that there&rsquo;s a limit to how fast
+computations can be performed without increasing power consumption and heat dissipation exponentially.</p>
+<h2 id="cores">Cores</h2>
+<p><img src="/images/why-gpus-are-faster-than-cpus/pentium.png" alt=""></p>
+<p>After reaching the limit on how fast the clock can go, what else can we do?</p>
+<p>One option is to multiply the processing units available on the chip, going from a single to multiple cores. Cores are
+individual processing units, allowing the computer to handle different tasks in parallel.</p>
+<p>However, adding more cores comes with both software and hardware costs.</p>
+<p>On the software side, the operating system and multi-threaded programs must manage the synchronization of tasks
+processed separately, which can be a difficult problem to solve.</p>
+<p>On the hardware side, each core is a fully capable processing unit, so having multiple cores makes the chip
+significantly more complex.</p>
+<p>Consider the following image of an old Intel 8086 processor with a visible die:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/8086-chip.png" alt=""></p>
+<p>Zooming in on the die:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/8086-zoom.png" alt=""></p>
+<p>Zooming in further we can see a NOR gate:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/nor-gate.png" alt=""></p>
+<p>With the picture in mind, imagine the complexity involved in creating a multi-core chip with an instruction set
+containing over a thousand instructions, like the <a href="https://www.felixcloutier.com/x86/">x86-64</a> ISA. Now, compare that
+to the 132 instructions of <a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#instruction-statements-reserved-instruction-keywords">NVIDIA&rsquo;s PTX instruction set</a>.</p>
+<p>A simpler instruction set allows for more cores on a chip. This is evident when you consider that a Ryzen 7 has 8 cores
+whereas an RTX 3060 contains over 3,500 cores.</p>
+<h2 id="simd">SIMD</h2>
+<p><a href="https://en.wikipedia.org/wiki/Single_instruction,_multiple_data">SIMD (Single Instruction, Multiple Data)</a> allows the
+execution of an operation on multiple data elements simultaneously, doing many calculations on one tick of the clock:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/simd.png" alt=""></p>
+<p>SIMD is common on GPUs but it can be found on CPUs too, through extensions like <a href="/post/understanding-advance-vector-extensions-avx/">AVX</a>.
+However, GPUs take it a step further by introducing a similar concept but operating on threads instead, called
+<a href="https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads">SIMT (Single Instruction, Multiple Threads)</a>.</p>
+<h2 id="shaders">Shaders</h2>
+<p>Shaders are small programs used in graphics to create effects such as lighting and textures influencing how objects
+appear on a screen:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/shaders.png" alt=""></p>
+<p>Introduced by NVIDIA alongside the GeForce 3 graphics cards in 2001, programmable shaders marked a significant
+advancement in rendering technology:</p>
+<blockquote>
+<p>With the GeForce3 and its nfiniteFX™ engine, NVIDIA introduces the world&rsquo;s first programmable 3D graphics chip
+architecture. (&hellip;) The addition of programmable Vertex Shaders, Pixel Shaders, and 3D texture technology to consumer
+graphics processors shakes up the PC graphics market—visual quality takes a quantum leap forward.</p>
+</blockquote>
+<p>Beyond their graphical origins, shaders have found utility in scientific computing. Developers in this field discovered
+that shaders could harness the parallel processing capabilities of GPUs. This allows them to handle massive
+computational tasks efficiently, even if the results aren&rsquo;t meant to be rendered.</p>
+<h2 id="cuda">CUDA</h2>
+<p>Innovating yet again, NVIDIA introduced CUDA in 2006, a platform that extends GPU usage beyond graphics to
+general-purpose computing tasks. This development catalyzed breakthroughs in fields like deep learning and scientific
+research.</p>
+<p>To illustrate, here&rsquo;s an example of summing vectors with CUDA:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cuda_runtime.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cublas_v2.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Function to check and handle CUDA errors
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkCudaError</span>(cudaError_t status) {
+    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> cudaSuccess) {
+        fprintf(stderr, <span style="color:#e6db74">&#34;CUDA error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, cudaGetErrorString(status));
+        exit(EXIT_FAILURE);
+    }
+}
+
+<span style="color:#75715e">// Function to check and handle cuBLAS errors
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkCublasError</span>(cublasStatus_t status) {
+    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> CUBLAS_STATUS_SUCCESS) {
+        fprintf(stderr, <span style="color:#e6db74">&#34;cuBLAS error: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status);
+        exit(EXIT_FAILURE);
+    }
+}
+
+<span style="color:#75715e">// Function to print vectors
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">printVector</span>(<span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>vector, <span style="color:#66d9ef">int</span> size) {
+    printf(<span style="color:#e6db74">&#34;[&#34;</span>);
+    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> size; i<span style="color:#f92672">++</span>) {
+        printf(<span style="color:#e6db74">&#34; %g&#34;</span>, vector[i]);
+    }
+    printf(<span style="color:#e6db74">&#34; ]&#34;</span>);
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#75715e">// Vectors in RAM
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> ramVectorA[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">2.0f</span>, <span style="color:#ae81ff">3.0f</span>, <span style="color:#ae81ff">4.0f</span>};
+    <span style="color:#66d9ef">float</span> ramVectorB[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5.0f</span>, <span style="color:#ae81ff">6.0f</span>, <span style="color:#ae81ff">7.0f</span>, <span style="color:#ae81ff">8.0f</span>};
+    <span style="color:#66d9ef">float</span> ramVectorResult[<span style="color:#ae81ff">4</span>];
+
+    <span style="color:#75715e">// VRAM pointers
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>vramVectorA, <span style="color:#f92672">*</span>vramVectorB, <span style="color:#f92672">*</span>vramVectorResult;
+    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> LENGTH <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span>;
+
+    <span style="color:#75715e">// Allocate VRAM memory
+</span><span style="color:#75715e"></span>    checkCudaError(cudaMalloc((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorA, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+    checkCudaError(cudaMalloc((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorB, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+    checkCudaError(cudaMalloc((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorResult, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+
+    <span style="color:#75715e">// Create cuBLAS handle
+</span><span style="color:#75715e"></span>    cublasHandle_t handle;
+    checkCublasError(cublasCreate(<span style="color:#f92672">&amp;</span>handle));
+
+    <span style="color:#75715e">// Copy data from RAM to VRAM
+</span><span style="color:#75715e"></span>    checkCublasError(cublasSetVector(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), ramVectorA, <span style="color:#ae81ff">1</span>, vramVectorA, <span style="color:#ae81ff">1</span>));
+    checkCublasError(cublasSetVector(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), ramVectorB, <span style="color:#ae81ff">1</span>, vramVectorB, <span style="color:#ae81ff">1</span>));
+
+    <span style="color:#75715e">// Perform vector addition: vramVectorResult = alpha * vramVectorA + vramVectorB
+</span><span style="color:#75715e"></span>    checkCublasError(cublasSaxpy(handle, LENGTH, <span style="color:#f92672">&amp;</span>alpha, vramVectorA, <span style="color:#ae81ff">1</span>, vramVectorB, <span style="color:#ae81ff">1</span>));
+
+    <span style="color:#75715e">// Copy result back to RAM
+</span><span style="color:#75715e"></span>    checkCublasError(cublasGetVector(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), vramVectorB, <span style="color:#ae81ff">1</span>, ramVectorResult, <span style="color:#ae81ff">1</span>));
+
+    <span style="color:#75715e">// Print result
+</span><span style="color:#75715e"></span>    printVector(ramVectorA, LENGTH);
+    printf(<span style="color:#e6db74">&#34; + &#34;</span>);
+    printVector(ramVectorB, LENGTH);
+    printf(<span style="color:#e6db74">&#34; = &#34;</span>);
+    printVector(ramVectorResult, LENGTH);
+    printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+
+    <span style="color:#75715e">// Clean up
+</span><span style="color:#75715e"></span>    checkCudaError(cudaFree(vramVectorA));
+    checkCudaError(cudaFree(vramVectorB));
+    checkCudaError(cudaFree(vramVectorResult));
+    checkCublasError(cublasDestroy(handle));
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>Compiling and executing it:</p>
+<pre tabindex="0"><code>$ nvcc -o vector_sum vector_sum.cu -lcublas
+
+$ ./vector_sum
+[ 1 2 3 4 ] + [ 5 6 7 8 ] = [ 6 8 10 12 ]
+</code></pre><p>The bet paid off. Fueled by the recent deep learning advancements, it&rsquo;s no surprise that NVIDIA has emerged as a leader
+]in its industry and it&rsquo;s currently poised for the title of the
+<a href="https://www.economist.com/business/2024/06/20/nvidia-is-now-the-worlds-most-valuable-company">world&rsquo;s most valuable company</a>,
+with a market cap of over $3 trillion:</p>
+<p><img src="/images/why-gpus-are-faster-than-cpus/chart.png" alt=""></p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Landauer%27s_principle">Landauer&rsquo;s principle</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Piezoelectricity">Piezoelectricity</a></li>
+<li><a href="https://www.youtube.com/watch?v=r8uTkYNR_pc">Quartz Crystal Design and Oscillator Basics: Lightboard Instruction</a></li>
+<li><a href="https://team.inria.fr/MULTICORE/files/2014/03/Dynamic-optimization-and-parallelization-of-binary-code_AEN-Multicore_final.pdf">AEN Multicore’s meeting at Minatec, Grenoble.</a></li>
+<li><a href="https://www.reddit.com/r/EngineeringPorn/comments/if07sj/the_intel_8086_processor_with_the_x86/">The Intel 8086 processor with the x86 architecture.</a></li>
+<li><a href="https://www.felixcloutier.com/x86/">x86 and amd64 instruction reference</a></li>
+<li><a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#instruction-statements-reserved-instruction-keywords">Parallel Thread Execution ISA Version 8.5</a></li>
+<li><a href="https://www.artstation.com/artwork/3dgkkJ?album_id=3027488">Custom Stylized Shader - Cartoon</a></li>
+<li><a href="https://www.gamesindustry.biz/nvidia-unveils-cuda-the-gpu-computing-revolution-begins">NVIDIA Unveils CUDA – The GPU Computing Revolution Begins</a></li>
+<li><a href="https://www.economist.com/business/2024/06/20/nvidia-is-now-the-worlds-most-valuable-company">Nvidia is now the world’s most valuable company</a></li>
+</ul>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+
