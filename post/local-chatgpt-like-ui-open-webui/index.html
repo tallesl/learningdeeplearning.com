@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Local LLMs With ChatGPT-like UI (Open WebUI) | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+</style>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Using Local LLMs With ChatGPT-like UI (Open WebUI)</span></h1>
+
+<p class="date">Jul 22, 2024</p>
+</div>
+
+<main>
+<p>Working with Ollama on the CLI is great, but the comfort of a fully-featured web UI can be nice too. There are many
+front-ends for chatting with LLMs, and today we will take a look at using Open WebUI, which strives to mimic the
+ChatGPT experience.</p>
+<h2 id="prompting-on-terminal-with-ollama">Prompting on terminal with Ollama</h2>
+<p>As mentioned in the introduction, we will be using Ollama for this tutorial. Make sure it’s installed and that you are
+able to chat with a model:</p>
+<pre tabindex="0"><code>$ ollama run llama3
+&gt;&gt;&gt; howdy
+Howdy back atcha! What brings you to these here parts?
+</code></pre><p>Double check that you have it running on port 11434 (default configuration). You can navigate to <a href="http://localhost:11434/">localhost:11434</a>
+on your browser to verify. You should get the following message:</p>
+<pre tabindex="0"><code>Ollama is running
+</code></pre><h2 id="prompting-on-the-web-browser-with-open-webui">Prompting on the web browser with Open WebUI</h2>
+<p>Using their provided Docker image it&rsquo;s the recommended way to run it:</p>
+<pre tabindex="0"><code>docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui ghcr.io/open-webui/open-webui:main
+</code></pre><table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-d</code></td>
+<td>detached mode (it will run in the background)</td>
+</tr>
+<tr>
+<td><code>--network=host</code></td>
+<td>share the host&rsquo;s network stack</td>
+</tr>
+<tr>
+<td><code>-v open-webui:/app/backend/data</code></td>
+<td>the <code>open-webui</code> volume on the host will be mapped to <code>/app/backend/data</code> inside the container</td>
+</tr>
+<tr>
+<td><code>-e OLLAMA_BASE_URL=http://127.0.0.1:11434</code></td>
+<td>sets <code>OLLAMA_BASE_URL</code> environment variable inside the container</td>
+</tr>
+<tr>
+<td><code>--name open-webui</code></td>
+<td>assigns a name to the container making it easier to manage on the command line</td>
+</tr>
+<tr>
+<td><code>ghcr.io/open-webui/open-webui:main</code></td>
+<td>image to be used for the container</td>
+</tr>
+</tbody>
+</table>
+<p>On the login page, just sign up with any email and password you want (no email confirmation required):</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/sign-up.png" alt=""></p>
+<p>Pick a model at the top and chat away:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/chat.png" alt=""></p>
+<h2 id="chatting-with-multiple-models">Chatting with multiple models</h2>
+<p>One interesting feature that Open WebUI enables us to do with ease is chat with two (or more) models at once:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/simultaneous-models.png" alt=""></p>
+<p>Not only that, but we can also alternate between the models in the same chat session:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/alternating-models.png" alt=""></p>
+<h2 id="image-recognition-and-ocr-with-llava">Image recognition and OCR with LLaVA</h2>
+<p>LLaVA (Large Language and Vision Assistant) is an openly available large language model developed by researchers from
+Microsoft and the University of Washington. It is capable of working with images, understanding, and describing them.</p>
+<p>Pulling LLaVA from the UI:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/pulling-llava.png" alt=""></p>
+<p>Asking to describe an image:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/llava-image-description.png" alt=""></p>
+<p>Extracting text:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/llava-ocr.png" alt=""></p>
+<h2 id="image-generation-with-stable-diffusion">Image generation with Stable Diffusion</h2>
+<p>Stable Diffusion is an openly available model developed by researchers at Stability AI. It&rsquo;s a text-to-image model,
+meaning that it is able to generate detailed images based on textual descriptions. Additionally, AUTOMATIC1111, a
+Stable Diffusion interface, offers a user-friendly application for generating and customizing images using the model.</p>
+<p>Let&rsquo;s add image generation to our GPT-like assistant. Create an installation folder for AUTOMATIC1111 and then (on
+Ubuntu):</p>
+<pre tabindex="0"><code>$ sudo apt install wget git python3 python3-venv libgl1 libglib2.0-0
+$ wget -q https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui/master/webui.sh
+$ chmod +x webui.sh
+$ ./webui.sh --api --lowvram
+</code></pre><p>The argument <code>--api</code> is needed for the Open WebUI integration. I have also added <code>--lowvram</code> because I&rsquo;m running it on
+a GPU with only 8GB of VRAM. If you are running on Radeon card like me, you may also have to set <code>HSA_OVERRIDE_GFX_VERSION=11.0.0</code>
+environment variable.</p>
+<p>Once the download finishes, the script will open your web browser on <a href="http://localhost:7860/">localhost:7860</a>. Let&rsquo;s
+generate something to test it out (&ldquo;frog in flames&rdquo;):</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/automatic1111.png" alt=""></p>
+<p>Back to Open WebUI, head to &ldquo;Admin Panel&rdquo;:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/admin-panel.png" alt=""></p>
+<p>Under image settings, make sure to turn on &ldquo;Image Generation (Experimental)&rdquo; and set the base URL to
+&ldquo;http://localhost:7860&rdquo;:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/image-settings.png" alt=""></p>
+<p>Now when clicking under the small image icon of a model response, an image will be generated:</p>
+<p><img src="/images/local-chatgpt-like-ui-open-webui/image-generation.png" alt=""></p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://ollama.com/library">library - Ollama</a></li>
+<li><a href="https://github.com/open-webui/open-webui">open-webui/open-webui: User-friendly WebUI for LLMs (Formerly Ollama WebUI)</a></li>
+<li><a href="https://llava-vl.github.io/">LLaVA: Large Language and Vision Assistant</a></li>
+<li><a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui">AUTOMATIC1111/stable-diffusion-webui: Stable Diffusion web UI</a></li>
+</ul>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+

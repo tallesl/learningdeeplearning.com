@@ -96,7 +96,7 @@ show this help message and exit
 Location of LLaMA weights, which contains tokenizer.model and model folders
 
 --model_size {7B,8B,8Bf,7Bf,13B,13Bf,30B,34B,65B,70B,70Bf,tokenizer_only}
-'f' models correspond to the finetuned versions, and are specific to the Llama2 official release. For more details on Llama2, checkout the original repo: https://huggingface.co/meta-llama
+&#39;f&#39; models correspond to the finetuned versions, and are specific to the Llama2 official release. For more details on Llama2, checkout the original repo: https://huggingface.co/meta-llama
 
 --output_dir OUTPUT_DIR
 Location to write HF model and tokenizer
@@ -117,7 +117,7 @@ Collecting accelerate
 Collecting blobfile
   Using cached...
 
-(venv) $ python3 venv/lib/python3.10/site-packages/transformers/models/llama/convert_llama_weights_to_hf.py --input_dir &quot;/path/to/downloaded/model/Meta-Llama-3-8B/&quot; --model_size 8B --output_dir . --llama_version 3 --safe_serialization true
+(venv) $ python3 venv/lib/python3.10/site-packages/transformers/models/llama/convert_llama_weights_to_hf.py --input_dir &#34;/path/to/downloaded/model/Meta-Llama-3-8B/&#34; --model_size 8B --output_dir . --llama_version 3 --safe_serialization true
 Saving a LlamaTokenizerFast to ..
 Fetching all parameters from the checkpoint at Meta-Llama-3-8B/.
 ...
@@ -136,21 +136,21 @@ tokenizer.json
 </code></pre><h2 id="safetensors-origins">Safetensors Origins</h2>
 <p>Many in the machine learning community use pickle to save models, but it&rsquo;s a known insecure way to share data since
 it&rsquo;s easy to execute arbitrary code. Here&rsquo;s an example:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> pickle
-<span style="color:#f92672">import</span> os
-
-<span style="color:#75715e"># Create a malicious class</span>
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Malicious</span>:
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reduce</span>(self):
-        <span style="color:#75715e"># os.system will execute the command</span>
-        <span style="color:#66d9ef">return</span> (os<span style="color:#f92672">.</span>system, (<span style="color:#e6db74">&#39;echo &#34;This is malicious code!&#34;&#39;</span>,))
-
-<span style="color:#75715e"># Serialize the malicious object</span>
-malicious_data <span style="color:#f92672">=</span> pickle<span style="color:#f92672">.</span>dumps(Malicious())
-
-<span style="color:#75715e"># Deserialize the malicious object (this will execute the command)</span>
-pickle<span style="color:#f92672">.</span>loads(malicious_data)
-</code></pre></div><p>This was the main intent of this new format, hence &lsquo;safe&rsquo; in the name. But it not only addresses this security issue
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">import</span> pickle
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create a malicious class</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Malicious</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">reduce</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># os.system will execute the command</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (os<span style="color:#f92672">.</span>system, (<span style="color:#e6db74">&#39;echo &#34;This is malicious code!&#34;&#39;</span>,))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Serialize the malicious object</span>
+</span></span><span style="display:flex;"><span>malicious_data <span style="color:#f92672">=</span> pickle<span style="color:#f92672">.</span>dumps(Malicious())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Deserialize the malicious object (this will execute the command)</span>
+</span></span><span style="display:flex;"><span>pickle<span style="color:#f92672">.</span>loads(malicious_data)
+</span></span></code></pre></div><p>This was the main intent of this new format, hence &lsquo;safe&rsquo; in the name. But it not only addresses this security issue
 but also improves the loading time of tensors by using CUDA to transfer the tensor directly to the GPU and skipping
 unnecessary CPU allocations (<a href="https://huggingface.co/docs/safetensors/en/speed">source</a>).</p>
 <h2 id="safetensors-data-format">Safetensors Data Format</h2>
@@ -158,61 +158,61 @@ unnecessary CPU allocations (<a href="https://huggingface.co/docs/safetensors/en
 object (of such size):</p>
 <p><img src="/images/safetensors-vs-gguf/safetensors-format.png" alt=""></p>
 <p>With Python, let&rsquo;s read the header of the <strong>&ldquo;model-00001-of-00004.safetensors&rdquo;</strong> that we got from the previous section:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> struct <span style="color:#f92672">import</span> unpack
-<span style="color:#f92672">from</span> json <span style="color:#f92672">import</span> dumps, loads
-
-<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#39;model-00001-of-00004.safetensors&#39;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;rb&#39;</span>) <span style="color:#66d9ef">as</span> f:
-
-    <span style="color:#75715e"># reading first 8 bytes to get the size of the header</span>
-    size_bytes <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">8</span>)
-    size, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;Q&#39;</span>, size_bytes)
-
-    <span style="color:#75715e"># the header is 9512 bytes long, reading it and printing a pretty JSON</span>
-    header_bytes <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read(size)
-    header_json <span style="color:#f92672">=</span> loads(header_bytes)
-    header_pretty <span style="color:#f92672">=</span> dumps(header_json, indent<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>)
-
-    print(header_pretty)
-</code></pre></div><p>Here is the result (shortened here, the result is 889 lines long):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-    <span style="color:#f92672">&#34;__metadata__&#34;</span>: {
-        <span style="color:#f92672">&#34;format&#34;</span>: <span style="color:#e6db74">&#34;pt&#34;</span>
-    },
-    <span style="color:#f92672">&#34;model.embed_tokens.weight&#34;</span>: {
-        <span style="color:#f92672">&#34;dtype&#34;</span>: <span style="color:#e6db74">&#34;BF16&#34;</span>,
-        <span style="color:#f92672">&#34;shape&#34;</span>: [
-            <span style="color:#ae81ff">128256</span>,
-            <span style="color:#ae81ff">4096</span>
-        ],
-        <span style="color:#f92672">&#34;data_offsets&#34;</span>: [
-            <span style="color:#ae81ff">0</span>,
-            <span style="color:#ae81ff">1050673152</span>
-        ]
-    },
-    <span style="color:#f92672">&#34;model.layers.0.input_layernorm.weight&#34;</span>: {
-        <span style="color:#f92672">&#34;dtype&#34;</span>: <span style="color:#e6db74">&#34;BF16&#34;</span>,
-        <span style="color:#f92672">&#34;shape&#34;</span>: [
-            <span style="color:#ae81ff">4096</span>
-        ],
-        <span style="color:#f92672">&#34;data_offsets&#34;</span>: [
-            <span style="color:#ae81ff">1050673152</span>,
-            <span style="color:#ae81ff">1050681344</span>
-        ]
-    },
-    <span style="color:#f92672">&#34;model.layers.0.mlp.down_proj.weight&#34;</span>: {
-        <span style="color:#f92672">&#34;dtype&#34;</span>: <span style="color:#e6db74">&#34;BF16&#34;</span>,
-        <span style="color:#f92672">&#34;shape&#34;</span>: [
-            <span style="color:#ae81ff">4096</span>,
-            <span style="color:#ae81ff">14336</span>
-        ],
-        <span style="color:#f92672">&#34;data_offsets&#34;</span>: [
-            <span style="color:#ae81ff">1050681344</span>,
-            <span style="color:#ae81ff">1168121856</span>
-        ]
-    },
-    <span style="color:#960050;background-color:#1e0010">...</span>
-}
-</code></pre></div><p>The <strong>&ldquo;pt&rdquo;</strong> format <em>probably</em> stands for &ldquo;PyTorch&rdquo; and we got multiple inner objects per layer as expected.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> struct <span style="color:#f92672">import</span> unpack
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> json <span style="color:#f92672">import</span> dumps, loads
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#39;model-00001-of-00004.safetensors&#39;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;rb&#39;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># reading first 8 bytes to get the size of the header</span>
+</span></span><span style="display:flex;"><span>    size_bytes <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>    size, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;Q&#39;</span>, size_bytes)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># the header is 9512 bytes long, reading it and printing a pretty JSON</span>
+</span></span><span style="display:flex;"><span>    header_bytes <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read(size)
+</span></span><span style="display:flex;"><span>    header_json <span style="color:#f92672">=</span> loads(header_bytes)
+</span></span><span style="display:flex;"><span>    header_pretty <span style="color:#f92672">=</span> dumps(header_json, indent<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(header_pretty)
+</span></span></code></pre></div><p>Here is the result (shortened here, the result is 889 lines long):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;__metadata__&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;format&#34;</span>: <span style="color:#e6db74">&#34;pt&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;model.embed_tokens.weight&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;dtype&#34;</span>: <span style="color:#e6db74">&#34;BF16&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;shape&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">128256</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;data_offsets&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">1050673152</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;model.layers.0.input_layernorm.weight&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;dtype&#34;</span>: <span style="color:#e6db74">&#34;BF16&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;shape&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;data_offsets&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">1050673152</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">1050681344</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;model.layers.0.mlp.down_proj.weight&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;dtype&#34;</span>: <span style="color:#e6db74">&#34;BF16&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;shape&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">4096</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">14336</span>
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;data_offsets&#34;</span>: [
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">1050681344</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">1168121856</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <strong>&ldquo;pt&rdquo;</strong> format <em>probably</em> stands for &ldquo;PyTorch&rdquo; and we got multiple inner objects per layer as expected.</p>
 <p>On each layer, we got <strong>&ldquo;BF16&rdquo;</strong> standing for <a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a>,
 which apparently is a way to save space (16-bit instead of 32-bit) while easing the conversion to traditional 32-bit
 when compared to a <strong>&ldquo;F16&rdquo;</strong> (see <a href="https://cloud.google.com/tpu/docs/bfloat16#choosing_bfloat16">here</a>).</p>
@@ -225,20 +225,20 @@ when compared to a <strong>&ldquo;F16&rdquo;</strong> (see <a href="https://clou
 <p><img src="/images/safetensors-vs-gguf/hf-header-info.png" alt=""></p>
 <h2 id="safetensors-inference-with-hfs-transformers">Safetensors Inference (with HF&rsquo;s transformers)</h2>
 <p>The <a href="https://github.com/huggingface/transformers">transformers</a> library makes it easy:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> torch <span style="color:#f92672">import</span> bfloat16
-<span style="color:#f92672">from</span> transformers <span style="color:#f92672">import</span> pipeline
-
-chat <span style="color:#f92672">=</span> [
-    {<span style="color:#e6db74">&#39;role&#39;</span>: <span style="color:#e6db74">&#39;system&#39;</span>, <span style="color:#e6db74">&#39;content&#39;</span>: <span style="color:#e6db74">&#39;AMD vs NVIDIA is an interesting topic&#39;</span>},
-]
-
-pipe <span style="color:#f92672">=</span> pipeline(<span style="color:#e6db74">&#39;text-generation&#39;</span>, <span style="color:#e6db74">&#39;/path/to/safetensors/model/Meta-Llama-3-8B/&#39;</span>, torch_dtype<span style="color:#f92672">=</span>bfloat16, device<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cpu&#39;</span>)
-response <span style="color:#f92672">=</span> pipe(chat, max_new_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">250</span>)
-print(response[<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;generated_text&#39;</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#e6db74">&#39;content&#39;</span>])
-</code></pre></div><p>Weirdly, when I set <strong>&ldquo;device_map=&lsquo;auto&rsquo;&quot;</strong> (and installing <strong>&ldquo;accelerate&rdquo;</strong> package) it was supposed to automatically
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> torch <span style="color:#f92672">import</span> bfloat16
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> transformers <span style="color:#f92672">import</span> pipeline
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chat <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#39;role&#39;</span>: <span style="color:#e6db74">&#39;system&#39;</span>, <span style="color:#e6db74">&#39;content&#39;</span>: <span style="color:#e6db74">&#39;AMD vs NVIDIA is an interesting topic&#39;</span>},
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pipe <span style="color:#f92672">=</span> pipeline(<span style="color:#e6db74">&#39;text-generation&#39;</span>, <span style="color:#e6db74">&#39;/path/to/safetensors/model/Meta-Llama-3-8B/&#39;</span>, torch_dtype<span style="color:#f92672">=</span>bfloat16, device<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cpu&#39;</span>)
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> pipe(chat, max_new_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">250</span>)
+</span></span><span style="display:flex;"><span>print(response[<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;generated_text&#39;</span>][<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#e6db74">&#39;content&#39;</span>])
+</span></span></code></pre></div><p>Weirdly, when I set <strong>&ldquo;device_map=&lsquo;auto&rsquo;&rdquo;</strong> (and installing <strong>&ldquo;accelerate&rdquo;</strong> package) it was supposed to automatically
 distribute the model in RAM and VRAM accordingly, but it didn&rsquo;t quite work out:</p>
 <pre tabindex="0"><code>torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 1002.00 MiB. GPU
-</code></pre><p>I had to offload the generation to my CPU (by setting <strong>&ldquo;device=&lsquo;cpu&rsquo;&quot;</strong> instead) since my RTX 2060 has only 6GB of
+</code></pre><p>I had to offload the generation to my CPU (by setting <strong>&ldquo;device=&lsquo;cpu&rsquo;&rdquo;</strong> instead) since my RTX 2060 has only 6GB of
 VRAM. This made the execution super slow&hellip; but it worked:</p>
 <pre tabindex="0"><code>$ python3 -m venv venv
 
@@ -297,7 +297,7 @@ increase output verbosity
 </code></pre><p>Before running the script, let&rsquo;s clone the repository and move the conversion script to the folder where &ldquo;gguf&rdquo; python
 module is located:</p>
 <pre tabindex="0"><code>$ git clone https://github.com/ggerganov/llama.cpp.git
-Cloning into 'llama.cpp'...
+Cloning into &#39;llama.cpp&#39;...
 remote: Enumerating objects: 27710, done.
 ...
 
@@ -318,7 +318,7 @@ Collecting numpy
 Collecting sentencepiece
   Using cached...
 
-(venv) $ python3 convert-hf-to-gguf-update.py &quot;/path/to/safetensors/model/Meta-Llama-3-8B/&quot; --outfile &quot;Meta-Llama-3-8B.gguf&quot; --outtype f16 --use-temp-file --no-lazy --model-name &quot;Meta Llama 3 8B&quot;
+(venv) $ python3 convert-hf-to-gguf-update.py &#34;/path/to/safetensors/model/Meta-Llama-3-8B/&#34; --outfile &#34;Meta-Llama-3-8B.gguf&#34; --outtype f16 --use-temp-file --no-lazy --model-name &#34;Meta Llama 3 8B&#34;
 INFO:hf-to-gguf:Loading model: ..
 INFO:gguf.gguf_writer:gguf: This GGUF file is for Little Endian only
 ...
@@ -339,25 +339,25 @@ single file, including the model vocabulary.</p>
 <p>The data format of the .gguf is a bit more complicated than .safetensors, and contains much more standardized metadata:</p>
 <p><img src="/images/safetensors-vs-gguf/gguf-format.png" alt=""></p>
 <p>Let&rsquo;s read the header of the &ldquo;Meta-Llama-3-8B.gguf&rdquo; that we got from the previous section with Python:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> struct <span style="color:#f92672">import</span> unpack
-
-<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#39;Meta-Llama-3-8B.gguf&#39;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;rb&#39;</span>) <span style="color:#66d9ef">as</span> f:
-    <span style="color:#75715e"># &#39;GGUF&#39; magic number</span>
-    magic_number <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">4</span>)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)
-    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Magic number: </span><span style="color:#e6db74">{</span>magic_number<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
-
-    <span style="color:#75715e"># GGUF version</span>
-    version, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;i&#39;</span>, f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">4</span>))
-    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Version: </span><span style="color:#e6db74">{</span>version<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
-
-    <span style="color:#75715e"># number of tensors</span>
-    tensor_count, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;Q&#39;</span>, f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">8</span>))
-    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Tensor count: </span><span style="color:#e6db74">{</span>tensor_count<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
-
-    <span style="color:#75715e"># number of metadata key-value pairs</span>
-    metadata_kv_count, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;Q&#39;</span>, f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">8</span>))
-    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Metadata key-value count: </span><span style="color:#e6db74">{</span>metadata_kv_count<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
-</code></pre></div><p>Here is the result:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> struct <span style="color:#f92672">import</span> unpack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#39;Meta-Llama-3-8B.gguf&#39;</span>, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;rb&#39;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># &#39;GGUF&#39; magic number</span>
+</span></span><span style="display:flex;"><span>    magic_number <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">4</span>)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Magic number: </span><span style="color:#e6db74">{</span>magic_number<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># GGUF version</span>
+</span></span><span style="display:flex;"><span>    version, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;i&#39;</span>, f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">4</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Version: </span><span style="color:#e6db74">{</span>version<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># number of tensors</span>
+</span></span><span style="display:flex;"><span>    tensor_count, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;Q&#39;</span>, f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Tensor count: </span><span style="color:#e6db74">{</span>tensor_count<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># number of metadata key-value pairs</span>
+</span></span><span style="display:flex;"><span>    metadata_kv_count, <span style="color:#f92672">=</span> unpack(<span style="color:#e6db74">&#39;&lt;Q&#39;</span>, f<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">8</span>))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Metadata key-value count: </span><span style="color:#e6db74">{</span>metadata_kv_count<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span></code></pre></div><p>Here is the result:</p>
 <pre tabindex="0"><code>Magic number: GGUF
 Version: 3
 Tensor count: 291
@@ -367,7 +367,7 @@ didn&rsquo;t help, it looks like it&rsquo;s broken at the moment.</p>
 <h2 id="gguf-inference-with-llamacpp">GGUF Inference (with llama.cpp)</h2>
 <p>Let&rsquo;s get a fresh clone of llama.cpp, build it, and use the handy <strong>&ldquo;llama-cli&rdquo;</strong> to prompt our .gguf model:</p>
 <pre tabindex="0"><code>$ git clone https://github.com/ggerganov/llama.cpp.git
-Cloning into 'llama.cpp'...
+Cloning into &#39;llama.cpp&#39;...
 remote: Enumerating objects: 27710, done.
 ...
 
@@ -378,7 +378,7 @@ $ LLAMA_CUDA=1 make -j
 [  3%] Building CUDA object CMakeFiles/ggml.dir/ggml-cuda/concat.cu.o
 ...
 
-$ bin/llama-cli -t 11 -ngl 9 -m gguf-py/Meta-Llama-3-8B.gguf -p &quot;AMD vs NVIDIA is an interesting topic&quot;
+$ bin/llama-cli -t 11 -ngl 9 -m gguf-py/Meta-Llama-3-8B.gguf -p &#34;AMD vs NVIDIA is an interesting topic&#34;
 Log start
 main: build = 3209 (95f57bb5)
 main: built with cc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0 for x86_64-linux-gnu
