@@ -4,8 +4,7 @@
     <title>Categories on Learning Deep Learning</title>
     <link>https://learningdeeplearning.com/categories/</link>
     <description>Recent content in Categories on Learning Deep Learning</description>
-    <generator>Hugo</generator>
-    <language>en-us</language>
-    <atom:link href="https://learningdeeplearning.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://learningdeeplearning.com/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

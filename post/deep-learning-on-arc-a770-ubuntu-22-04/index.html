@@ -131,7 +131,7 @@ luck with it either.</p>
 </code></pre><p>And an error right after importing the package:</p>
 <pre tabindex="0"><code>$ python3
 Python 3.10.12 (main, Mar 22 2024, 16:50:05) [GCC 11.4.0] on linux
-Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import intel_extension_for_pytorch as ipex
 Traceback (most recent call last):
 (...)
@@ -148,16 +148,16 @@ OSError: libmkl_intel_lp64.so.2: cannot open shared object file: No such file or
 <p>Following Intel&rsquo;s official documentation, we get this for installing the package:</p>
 <pre tabindex="0"><code>$ pip install intel-extension-for-tensorflow[xpu]
 </code></pre><p>Then the following for checking the installation:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">import</span> intel_extension_for_tensorflow <span style="color:#66d9ef">as</span> itex
-</span></span><span style="display:flex;"><span>print(itex<span style="color:#f92672">.</span>__version__)
-</span></span></code></pre></div><p>And, of course, it didn&rsquo;t work:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> intel_extension_for_tensorflow <span style="color:#66d9ef">as</span> itex
+print(itex<span style="color:#f92672">.</span>__version__)
+</code></pre></div><p>And, of course, it didn&rsquo;t work:</p>
 <pre tabindex="0"><code>tensorflow.python.framework.errors_impl.NotFoundError: libimf.so: cannot open shared object file: No such file or directory
 </code></pre><p>Again, Docker to the rescue:</p>
 <pre tabindex="0"><code>$ docker run -it --rm --device /dev/dri -v /dev/dri/by-path:/dev/dri/by-path --ipc=host intel/intel-extension-for-tensorflow:xpu
 </code></pre><p>While inside the container it seems that it&rsquo;s working as expected:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(itex<span style="color:#f92672">.</span>__version__)
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2.15.0.0</span>
-</span></span></code></pre></div><h2 id="sources">Sources</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">&gt;&gt;&gt;</span> print(itex<span style="color:#f92672">.</span>__version__)
+<span style="color:#ae81ff">2.15.0.0</span>
+</code></pre></div><h2 id="sources">Sources</h2>
 <ul>
 <li><a href="https://www.rockpapershotgun.com/intels-arc-a770-16gb-graphics-card-reaches-300-in-the-us-as-dx11-performance-rises-by-19-percent">Intel&rsquo;s Arc A770 16GB graphics card reaches $300 in the US, as DX11 performance rises by 19 percent</a></li>
 <li><a href="https://hub.docker.com/u/intel">intel&rsquo;s Profile | Docker Hub</a></li>
