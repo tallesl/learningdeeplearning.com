@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 29 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LLM Inference as a Service</title>
+      <link>https://learningdeeplearning.com/post/llm-inference-as-a-service/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/llm-inference-as-a-service/</guid>
+      <description>Just like other &amp;ldquo;as-a-service&amp;rdquo; offerings, LLMs are following the trend, with multiple providers stepping up to simplify their use and integration. Running large language models on your own can be complex—they typically require GPUs and constantly evolving libraries and models. Leveraging a provider that offers out-of-the-box inference can remove much of the incidental complexity, allowing you to focus on what’s essential for your use case.
+Pricing comparison (July 2024) Here&amp;rsquo;s a bird&amp;rsquo;s-eye view of some top LLM service providers and their pricing:</description>
+    </item>
+    
     <item>
       <title>Download .gguf Models From Ollama Library</title>
       <link>https://learningdeeplearning.com/post/download-gguf-models-from-ollama-library/</link>

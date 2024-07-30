@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LLM Inference as a Service | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+
+  main img {
+    display: block;
+    margin: 0 auto;
+  }
+</style>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">LLM Inference as a Service</span></h1>
+
+<p class="date">Jul 29, 2024</p>
+</div>
+
+<main>
+<p>Just like other &ldquo;as-a-service&rdquo; offerings, LLMs are following the trend, with multiple providers stepping up to simplify
+their use and integration. Running large language models on your own can be complex—they typically require GPUs and
+constantly evolving libraries and models. Leveraging a provider that offers out-of-the-box inference can remove much of
+the incidental complexity, allowing you to focus on what’s essential for your use case.</p>
+<h2 id="pricing-comparison-july-2024">Pricing comparison (July 2024)</h2>
+<p>Here&rsquo;s a bird&rsquo;s-eye view of some top LLM service providers and their pricing:</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Llama 3 8B (per 1M tokens)</th>
+<th>Mixtral-8X7B (per 1M tokens)</th>
+<th>Pricing page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anyscale</td>
+<td>$0.15</td>
+<td>$0.15</td>
+<td><a href="https://www.anyscale.com/pricing">anyscale.com</a></td>
+</tr>
+<tr>
+<td>Deep Infra</td>
+<td>$0.06</td>
+<td>$0.24</td>
+<td><a href="https://deepinfra.com/pricing">deepinfra.com</a></td>
+</tr>
+<tr>
+<td>Fireworks</td>
+<td>$0.20</td>
+<td>$0.50</td>
+<td><a href="https://fireworks.ai/pricing">fireworks.ai</a></td>
+</tr>
+<tr>
+<td>Groq</td>
+<td>$0.08</td>
+<td>$0.24</td>
+<td><a href="https://wow.groq.com/">groq.com</a></td>
+</tr>
+<tr>
+<td>Lepton AI</td>
+<td>$0.07</td>
+<td>$0.50</td>
+<td><a href="https://www.lepton.ai/pricing">lepton.ai</a></td>
+</tr>
+<tr>
+<td>Mistral AI</td>
+<td>-</td>
+<td>$0.70</td>
+<td><a href="https://mistral.ai/technology/#pricing">mistral.ai</a></td>
+</tr>
+<tr>
+<td>Novita AI</td>
+<td>$0.06</td>
+<td>-</td>
+<td><a href="https://novita.ai/model-api/pricing">novita.ai</a></td>
+</tr>
+<tr>
+<td>OpenPipe</td>
+<td>$0.45</td>
+<td>$1.40</td>
+<td><a href="https://openpipe.ai/pricing#rates">openpipe.ai</a></td>
+</tr>
+<tr>
+<td>Together AI</td>
+<td>$0.20</td>
+<td>-</td>
+<td><a href="https://www.together.ai/pricing">together.ai</a></td>
+</tr>
+</tbody>
+</table>
+<p>Note the above table above is not supposed to be an exhaustive comparison of such providers, it&rsquo;s missing important
+information such as context size, inference speed, and model quantization.</p>
+<h2 id="checking-out-groq">Checking out Groq</h2>
+<p><img src="/images/llm-inference-as-a-service/groq-chip.png" alt=""></p>
+<p>Groq was by far the choice that piqued my interest the most: it&rsquo;s unbeliavably cheap and fast.</p>
+<p>Groq was founded in 2016 by former Google employees who worked on Google’s Tensor Processing Unit (TPU). Leveraging their expertise in custom-designed chips for deep learning, they are now creating their own hardware, specifically what they call the &ldquo;Language Processing Unit&rdquo; (LPU):</p>
+<blockquote>
+<p>LPU Inference Engines are designed to overcome the two bottlenecks for LLMs–the amount of compute and memory bandwidth. An LPU system has as much or more compute as a Graphics Processor (GPU) and reduces the amount of time per word calculated, allowing faster generation of text sequences. With no external memory bandwidth bottlenecks an LPU Inference Engine delivers orders of magnitude better performance than Graphics Processor.</p>
+</blockquote>
+<p>Installing their official package:</p>
+<pre tabindex="0"><code>pip install groq
+</code></pre><p>Testing it out:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> groq <span style="color:#f92672">import</span> Groq
+
+prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Tell me a joke&#39;</span>
+
+groq_client <span style="color:#f92672">=</span> Groq(
+    api_key<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;GROQ_SECRET_GOES_HERE&#39;</span>,
+)
+
+chat_completion <span style="color:#f92672">=</span> groq_client<span style="color:#f92672">.</span>chat<span style="color:#f92672">.</span>completions<span style="color:#f92672">.</span>create(
+    messages<span style="color:#f92672">=</span>[
+        {
+            <span style="color:#e6db74">&#39;role&#39;</span>: <span style="color:#e6db74">&#39;user&#39;</span>,
+            <span style="color:#e6db74">&#39;content&#39;</span>: prompt,
+        }
+    ],
+    model<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;llama3-8b-8192&#39;</span>,
+)
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Prompt time: </span><span style="color:#e6db74">{</span>chat_completion<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>prompt_time<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Prompt tokens: </span><span style="color:#e6db74">{</span>chat_completion<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>prompt_tokens<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Completion time: </span><span style="color:#e6db74">{</span>chat_completion<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>completion_time<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Completion tokens: </span><span style="color:#e6db74">{</span>chat_completion<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>completion_tokens<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Model: </span><span style="color:#e6db74">{</span>chat_completion<span style="color:#f92672">.</span>model<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Prompt: </span><span style="color:#e6db74">{</span>prompt<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Response: </span><span style="color:#e6db74">{</span>chat_completion<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</code></pre></div><p>Output:</p>
+<pre tabindex="0"><code>Prompt time: 0.003391819
+Prompt tokens: 14
+Completion time: 0.013561327
+Completion tokens: 18
+Model: llama3-8b-8192
+Prompt: Tell me a joke
+Response: Why couldn't the bicycle stand up by itself?
+
+Because it was two-tired!...
+</code></pre><p>You can grab your API key <a href="https://console.groq.com/keys">here</a> and check your usage
+<a href="https://console.groq.com/settings/usage">here</a>.</p>
+<h2 id="comparing-providers">Comparing providers</h2>
+<p>Due how early and disruptive LLMs are (and how high inflation is nowadays), the pricing comparison table of this
+article will be quickly outdated. <a href="https://llm.extractum.io/gpu-hostings/">LLM Explorer</a> is a good resource on finding
+more providers, and <a href="https://openrouter.ai/models/meta-llama/llama-3-8b-instruct">OpenRouter</a> not only allows you to
+quickly compare prices but also offers an API for <a href="https://openrouter.ai/docs/provider-routing">routing models and providers</a>
+on the fly.</p>
+<p><img src="/images/llm-inference-as-a-service/llm-explorer.png" alt=""></p>
+<p><img src="/images/llm-inference-as-a-service/open-router.png" alt=""></p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://wow.groq.com/lpu-inference-engine/">The Groq LPU Inference Engine</a></li>
+<li><a href="https://github.com/groq/groq-python">groq/groq-python: The official Python Library for the Groq API</a></li>
+<li><a href="https://llm.extractum.io/">LLM Explorer</a></li>
+<li><a href="https://openrouter.ai/">OpenRouter</a></li>
+</ul>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+

@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://learningdeeplearning.com/post/download-gguf-models-from-ollama-library/</loc>
-    <lastmod>2024-07-26T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://learningdeeplearning.com/</loc>
-    <lastmod>2024-07-26T00:00:00+00:00</lastmod>
+    <lastmod>2024-07-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://learningdeeplearning.com/post/llm-inference-as-a-service/</loc>
+    <lastmod>2024-07-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://learningdeeplearning.com/post/</loc>
+    <lastmod>2024-07-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://learningdeeplearning.com/post/download-gguf-models-from-ollama-library/</loc>
     <lastmod>2024-07-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://learningdeeplearning.com/post/local-chatgpt-like-ui-open-webui/</loc>
