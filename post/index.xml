@@ -6,7 +6,28 @@
     <description>Recent content in Posts on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Debugging and Monitoring Ollama Usage</title>
+      <link>https://learningdeeplearning.com/post/debugging-and-monitoring-ollama-usage/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/debugging-and-monitoring-ollama-usage/</guid>
+      <description>Ollama is such a nice backend for running LLMs on your own, you can get it up and running in a single command, and right after it&amp;rsquo;s done, you can pull and chat with different models in no time.
+While getting it up and running requires pretty much no configuration, debugging and monitoring it&amp;rsquo;s not as obvious. Here are some things I&amp;rsquo;ve been doing myself on that regard.
+Keep an eye on htop and nvtop The first suggestion is pretty basic: keep an eye on CPU and GPU usage while Ollama is generating text.</description>
+    </item>
+    
+    <item>
+      <title>Prompting Tips</title>
+      <link>https://learningdeeplearning.com/post/prompting-tips/</link>
+      <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/prompting-tips/</guid>
+      <description>Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:
+ Use clear and direct language: Even though LLMs are impressively &amp;lsquo;human&amp;rsquo;, remember that they are still machines and prefer clear and direct instructions.</description>
+    </item>
+    
     <item>
       <title>LLM Inference as a Service</title>
       <link>https://learningdeeplearning.com/post/llm-inference-as-a-service/</link>
