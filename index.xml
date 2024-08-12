@@ -19,16 +19,6 @@ Keep an eye on htop and nvtop The first suggestion is pretty basic: keep an eye 
     </item>
     
     <item>
-      <title>Prompting Tips</title>
-      <link>https://learningdeeplearning.com/post/prompting-tips/</link>
-      <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
-      
-      <guid>https://learningdeeplearning.com/post/prompting-tips/</guid>
-      <description>Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:
- Use clear and direct language: Even though LLMs are impressively &amp;lsquo;human&amp;rsquo;, remember that they are still machines and prefer clear and direct instructions.</description>
-    </item>
-    
-    <item>
       <title>LLM Inference as a Service</title>
       <link>https://learningdeeplearning.com/post/llm-inference-as-a-service/</link>
       <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
