@@ -1,6 +1,6 @@
 ---
 title: Prompting Tips
-date: 2024-08-02
+date: 2024-08-27
 ---
 
 Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:
