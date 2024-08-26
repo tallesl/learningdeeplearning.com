@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Training, Validation, and Test Datasets</title>
+      <link>https://learningdeeplearning.com/post/training-validation-and-test-datasets/</link>
+      <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/training-validation-and-test-datasets/</guid>
+      <description>You may have come across the terms &amp;ldquo;training set&amp;rdquo;, &amp;ldquo;validation set&amp;rdquo;, and &amp;ldquo;test set&amp;rdquo; in the context of machine learning, and it might not be immediately clear what distinguishes them, particularly the difference between the validation and test sets. Fortunately, the distinction is straightforward once you understand the roles each plays in the model development process.
+Training Dataset The training dataset is the portion of the dataset used to train the model.</description>
+    </item>
+    
     <item>
       <title>Debugging and Monitoring Ollama Usage</title>
       <link>https://learningdeeplearning.com/post/debugging-and-monitoring-ollama-usage/</link>

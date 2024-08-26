@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Training, Validation, and Test Datasets | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+
+  main img {
+    display: block;
+    margin: 0 auto;
+  }
+</style>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Training, Validation, and Test Datasets</span></h1>
+
+<p class="date">Aug 26, 2024</p>
+</div>
+
+<main>
+<p>You may have come across the terms <strong>&ldquo;training set&rdquo;</strong>, <strong>&ldquo;validation set&rdquo;</strong>, and <strong>&ldquo;test set&rdquo;</strong> in the context of
+machine learning, and it might not be immediately clear what distinguishes them, particularly the difference between
+the validation and test sets. Fortunately, the distinction is straightforward once you understand the roles each plays
+in the model development process.</p>
+<h2 id="training-dataset">Training Dataset</h2>
+<p>The training dataset is the portion of the dataset used to train the model. This is the data that the model actually
+learns from: the model iteratively processes this data, calculating losses and adjusting its internal weights
+accordingly to improve its predictions.</p>
+<h2 id="validation-dataset">Validation Dataset</h2>
+<p>The validation dataset is used during the training process, but it serves a different purpose from the training
+dataset. The model does not learn from this data. Instead, it is used during training to check if the model is
+overfitting (performing poorly only on unseen data). This dataset provides quick feedback, allowing you to rethink
+hyperparameters and possibly even the model architecture.</p>
+<h2 id="test-dataset">Test Dataset</h2>
+<p>Once training is fully completed using both the training and validation datasets, you have a finished model. Now, it&rsquo;s
+time to assess how well the model performs. This is where the test dataset comes into play. The test dataset contains
+data that the model has never seen during the training process, either for learning or validation. Its primary purpose
+is to evaluate the model&rsquo;s performance and generalization ability on completely new data.
+Analogy</p>
+<h2 id="tldr">TLDR</h2>
+<p><strong>The validation set is used during training to monitor how accuracy improves as training progresses. The test set is
+used after training is complete to evaluate how accurate the produced model is.</strong></p>
+<p>Think of the validation dataset as analogous to development tests in software engineering, where the goal is to catch
+errors and make improvements during the development process. In contrast, the test dataset is like a QA test conducted
+after development is complete, ensuring that the final product meets the required standards before it is deployed.</p>
+<h2 id="suggested-split">Suggested Split</h2>
+<p><img src="/images/training-validation-and-test-datasets/ratio.png" alt=""></p>
+<p>Not unlike many other aspects of machine learning, the split ratio for each of the three datasets is somewhat
+arbitrary. There is no definitive right or wrong amount to choose, with the most popular suggestions being
+<strong>80/10/10</strong>, <strong>70/15/15</strong>, and <strong>60/20/20</strong>.</p>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+
