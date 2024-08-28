@@ -1,5 +1,6 @@
-/public/
-/resources/_gen/
+*.swp
+.hugo_build.lock
 /assets/
 /hugo_stats.json
-.hugo_build.lock
+/public/
+/resources/_gen/
