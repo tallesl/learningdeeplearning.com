@@ -6,7 +6,17 @@
     <description>Recent content on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 26 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 27 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Prompting Tips</title>
+      <link>https://learningdeeplearning.com/post/prompting-tips/</link>
+      <pubDate>Tue, 27 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/prompting-tips/</guid>
+      <description>Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:
+ Use clear and direct language: Even though LLMs are impressively &amp;lsquo;human&amp;rsquo;, remember that they are still machines and prefer clear and direct instructions.</description>
+    </item>
+    
     <item>
       <title>Training, Validation, and Test Datasets</title>
       <link>https://learningdeeplearning.com/post/training-validation-and-test-datasets/</link>
