@@ -1,14 +1,21 @@
 ---
 title: Prompting Tips
-date: 2024-08-27
+date: 2024-08-28
 ---
 
-Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:
-- **Use clear and direct language**: Even though LLMs are impressively 'human', remember that they are still machines and prefer clear and direct instructions.
+Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and
+a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your
+desire from the very first message sent to the model:
+
+- **Use clear and direct language**: Even though LLMs are impressively 'human', remember that they are still machines
+and prefer clear and direct instructions.
 - **Personas**: Specify who the model is supposed to impersonate and who the target audience of the content is.
-- **Define the format and length**: Do you want a long article? A poem maybe? Bullet lists? Haiku? Make sure to mention the desired format and length.
-- **External information**: Adding external information (such as citations) can greatly improve the result instead of relying solely on the LLM's previously acquired knowledge.
-- **Iterate**: A good result is iterative
+- **Define the format and length**: Do you want a long article? A poem maybe? Bullet lists? Haiku? Make sure to mention
+the desired format and length.
+- **External information**: Adding external information (such as citations) can greatly improve the result instead of
+relying solely on the LLM's previously acquired knowledge.
+- **Iterate**: Refine your results through a back-and-forth conversation, giving feedback as you go to shape the next
+response
 
 ## Example #1: Technical article about AMD
 
@@ -85,9 +92,9 @@ performance, and lower prices.
 AMD's partnership with TensorStack and the introduction of the Amuse 2.0.0 software exemplify how the company is
 simplifying the integration of AI capabilities into everyday computing with their Ryzen™ AI 300 Series and Radeon™ RX
 7000 Series. This move not only democratizes access to advanced AI technologies but also enhances user experience with
-features like AMD XDNA™ Super Resolution, which effortlessly improves image generation speeds and quality. This level
-of innovation is crucial, as it enables both casual users and professionals to leverage AI for creative and
-productivity tasks without needing specialized knowledge.
+features like AMD XDNA™ Super Resolution, which effortlessly improves image generation speeds and quality. This level of
+innovation is crucial, as it enables both casual users and professionals to leverage AI for creative and productivity
+tasks without needing specialized knowledge.
 
 Furthermore, AMD's efforts in making large model inference more accessible through its Radeon GPUs and ROCm software
 platforms are transforming the software development landscape. By enabling the local execution of powerful AI models
@@ -191,16 +198,20 @@ powers! It's-a total chaos, but in a super fun way! So, are you ready to join me
 Super Mario Wonder and find out what wonders await us!
 ```
 
-## Further reading
+## Beyond the basics
 
-Those are the very basics TODO:
+Ready to take your prompting skills to the next level? Here are some more advanced tips for you to consider:
 
-- Chain of Thought (CoT): A reasoning process where the model generates intermediate steps to solve a problem.
-- n-shot Learning: A learning paradigm where the model is trained with a small number of examples for each class.
-- RAG (Retrieval-Augmented Generation): A technique that combines retrieval of relevant documents with generative models to produce more accurate and informed responses.
-- Fine-tuning: The process of training a pre-trained model on a specific task or dataset to improve its performance for that particular task.
-- Context Size: The maximum amount of text or tokens that a model can consider at once when generating a response.
-- Temperature: A parameter that controls the randomness of predictions by scaling the logits before applying the softmax function.
+- **Temperature**: The amount of randomness in the model's predictions. Higher values lead to more creative outputs but
+also increase the likelihood of generating inaccurate responses (or 'hallucinations').
+- **Context Size**: Amount of text or tokens a model can handle in one interaction. It functions as the model's
+short-term memory, determining how much context it can retain during a conversation.
+- **Chain of Thought (CoT)**: Encouraging the model to think step by step can enhance its reasoning abilities. It's
+similar to thinking out loud before arriving at an answer.
+- **RAG (Retrieval-Augmented Generation)**: Automatically retrieving relevant information from your database and
+incorporating it into the prompt allows the model to use freshly acquired knowledge when responding.
+- **Fine-tuning**: Further training an existing model with your own data. Although costly and time-consuming, the result
+is a customized model tailored to your specific needs.
 
 ## Sources
 
@@ -210,8 +221,3 @@ Those are the very basics TODO:
 - [Build Your Local Coding Copilot with AMD Radeon GPU Platform](https://community.amd.com/t5/ai/build-your-local-coding-copilot-with-amd-radeon-gpu-platform/ba-p/689459)
 - [Llama 3.1: Ready to Run on AMD platforms from data center, edge to AI PCs](https://community.amd.com/t5/ai/llama-3-1-ready-to-run-on-amd-platforms-from-data-center-edge-to/ba-p/697323)
 - [Super Mario Bros. Wonder - Wikipedia](https://en.wikipedia.org/wiki/Super_Mario_Bros._Wonder)
-
-
-
-
-
