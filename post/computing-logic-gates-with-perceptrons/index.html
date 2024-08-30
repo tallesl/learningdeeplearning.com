@@ -124,7 +124,7 @@ saw above. Dot product takes two equal-length sequences of numbers and returns a
 <p>A common technique to shift a function curve left or right is to add a (constant) value to its input, known as a
 <strong>&ldquo;bias&rdquo;</strong>.</p>
 <p>To illustrate, consider the sigmoid function (in blue). Normally, for x = 0, y = 1. By adding a bias of -1, we shift the
-function to the right, now for x = 0, y = 0.27 (which is just sigmoid(-1)).</p>
+function to the right, now for x = 0, y = 0.27 (which is just sigmoid(-1), in red).</p>
 <p>Don&rsquo;t worry about the sigmoid function for now, it will be introduced later on this article.</p>
 <p><img src="/images/computing-logic-gates-with-perceptrons/sigmoid-bias.png" alt=""></p>
 <h2 id="step-function">Step function</h2>
@@ -272,8 +272,8 @@ print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 OR 
 </tbody>
 </table>
 <p>Unlike the other logic gates, the XOR gate is not linearly separable, that is, we cannot draw a single line to separate
-the true values from the false. As a result, a single perceptron cannot implement the XOR gate, a challenge known as
-<strong>&ldquo;the XOR problem&rdquo;</strong>.</p>
+the outputted true values from the outputted false. As a result, a single perceptron cannot implement the XOR gate, a
+challenge known as <strong>&ldquo;the XOR problem&rdquo;</strong>.</p>
 <p>Notice how the blue and red dots on the graph below cannot be separated by a single line.</p>
 <p><img src="/images/computing-logic-gates-with-perceptrons/xor.png" alt=""></p>
 <h2 id="neural-network">Neural network</h2>
@@ -298,7 +298,7 @@ the weighted sum of inputs and biases, we will use the sigmoid function.</p>
 is that the sigmoid function provides a smooth, gradual transition, unlike the abrupt change seen in the step function.</p>
 <p>The sigmoid function is an example of an <strong>&ldquo;activation function&rdquo;</strong>, which determines whether or not a neuron is
 activated based on its output.</p>
-<p><img src="/images/computing-logic-gates-with-perceptrons/sigmoid-bias.png" alt=""></p>
+<p><img src="/images/computing-logic-gates-with-perceptrons/sigmoid-step.png" alt=""></p>
 <h2 id="solving-the-xor-problem">Solving the XOR problem</h2>
 <p>Lastly, let&rsquo;s build our neural network and manually set the weights that we know in advance will allow the network to
 solve the XOR problem.</p>
