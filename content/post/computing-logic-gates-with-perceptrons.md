@@ -75,7 +75,7 @@ A common technique to shift a function curve left or right is to add a (constant
 **"bias"**.
 
 To illustrate, consider the sigmoid function (in blue). Normally, for x = 0, y = 1. By adding a bias of -1, we shift the
-function to the right, now for x = 0, y = 0.27 (which is just sigmoid(-1)).
+function to the right, now for x = 0, y = 0.27 (which is just sigmoid(-1), in red).
 
 Don't worry about the sigmoid function for now, it will be introduced later on this article.
 
@@ -175,8 +175,8 @@ a   | b   | a XOR b
 1   | 1   | 0
 
 Unlike the other logic gates, the XOR gate is not linearly separable, that is, we cannot draw a single line to separate
-the true values from the false. As a result, a single perceptron cannot implement the XOR gate, a challenge known as
-**"the XOR problem"**.
+the outputted true values from the outputted false. As a result, a single perceptron cannot implement the XOR gate, a
+challenge known as **"the XOR problem"**.
 
 Notice how the blue and red dots on the graph below cannot be separated by a single line.
 
@@ -216,7 +216,7 @@ is that the sigmoid function provides a smooth, gradual transition, unlike the a
 The sigmoid function is an example of an **"activation function"**, which determines whether or not a neuron is
 activated based on its output.
 
-![](/images/computing-logic-gates-with-perceptrons/sigmoid-bias.png)
+![](/images/computing-logic-gates-with-perceptrons/sigmoid-step.png)
 
 ## Solving the XOR problem
 
