@@ -6,7 +6,17 @@
     <description>Recent content on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>\&#34;tensor\&#34;\?</title>
+      <link>https://learningdeeplearning.com/post/tensor/</link>
+      <pubDate>Tue, 03 Sep 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/tensor/</guid>
+      <description>A tensor is a mathematical object that encompass scalars, vectors, and matrices, and arrays of even higher dimensions:
+ 0-dimensional tensor (scalar): 123 1-dimensional tensor: [1, 2, 3] 2-dimensional tensor: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] 3-dimensional tensor: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]] N-dimensional tensor: &amp;hellip;  Tensors are used to represent data like 2D images (height and width), 3D videos (height, width, and time), 4D tensor for a sequence of 3D images (height, width, depth, and time), &amp;hellip;</description>
+    </item>
+    
     <item>
       <title>Computing Logic Gates with Perceptrons</title>
       <link>https://learningdeeplearning.com/post/computing-logic-gates-with-perceptrons/</link>
