@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 11 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Profiling CUDA calls</title>
+      <link>https://learningdeeplearning.com/post/profiling-cuda-calls/</link>
+      <pubDate>Wed, 11 Sep 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/profiling-cuda-calls/</guid>
+      <description>Profiling the CUDA calls that occur behind the scenes can help evaluate different approaches and identify performance bottlenecks in GPU-accelerated applications. The NVIDIA Visual Profiler is an easy-to-use tool that enables you to visualize the execution of CUDA kernels and API calls, providing valuable insights for optimizing your code and improving GPU efficiency.
+Running a sample CUDA code First, let&amp;rsquo;s write a basic CUDA program:
+#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;cuda_runtime.h&amp;gt; __global__ void add(int a, int b, int *c) { *c = a + b; } int main() { int a = 1, b = 2, c; int *dev_c; cudaMalloc(&amp;amp;dev_c, sizeof(int)); add&amp;lt;&amp;lt;&amp;lt;1, 1&amp;gt;&amp;gt;&amp;gt;(a, b, dev_c); cudaMemcpy(&amp;amp;c, dev_c, sizeof(int), cudaMemcpyDeviceToHost); printf(&amp;#34;%d + %d is %d\n&amp;#34;, a, b, c); cudaFree(dev_c); return 0; } Compiling it:</description>
+    </item>
+    
     <item>
       <title>\&#34;tensor\&#34;\?</title>
       <link>https://learningdeeplearning.com/post/tensor/</link>
