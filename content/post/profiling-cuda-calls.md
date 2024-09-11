@@ -1,5 +1,5 @@
 ---
-title: Profiling CUDA calls
+title: Profiling CUDA Calls
 date: 2024-09-11
 ---
 
