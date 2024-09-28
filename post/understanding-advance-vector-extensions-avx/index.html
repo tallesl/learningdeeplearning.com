@@ -73,86 +73,86 @@ giving us 256-bit long registers. The latest AVX version, AVX-512, has increased
 registers).</p>
 <h2 id="show-me-the-code">Show Me the Code</h2>
 <p>Here is an example of summing vectors using <a href="https://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Vector-Extensions.html">GCC Vector Extensions</a>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">#define LENGTH 4
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">int</span> v4si <span style="color:#a6e22e">__attribute__</span> ((vector_size (LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>))));
-
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print_vector</span>(<span style="color:#66d9ef">const</span> v4si<span style="color:#f92672">*</span> vector) {
-    printf(<span style="color:#e6db74">&#34;{ &#34;</span>);
-    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> LENGTH; <span style="color:#f92672">++</span>i) printf(<span style="color:#e6db74">&#34;%d &#34;</span>, (<span style="color:#f92672">*</span>vector)[i]);
-    printf(<span style="color:#e6db74">&#34;}&#34;</span>);
-}
-
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-    v4si a <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
-    v4si b <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>};
-    v4si c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b;
-
-    print_vector(<span style="color:#f92672">&amp;</span>a);
-    printf(<span style="color:#e6db74">&#34; + &#34;</span>);
-    print_vector(<span style="color:#f92672">&amp;</span>b);
-    printf(<span style="color:#e6db74">&#34; = &#34;</span>);
-    print_vector(<span style="color:#f92672">&amp;</span>c);
-    printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-
-    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-}
-</code></pre></div><p>Compiling it and executing it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define LENGTH 4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">int</span> v4si <span style="color:#a6e22e">__attribute__</span> ((<span style="color:#a6e22e">vector_size</span> (LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>))));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print_vector</span>(<span style="color:#66d9ef">const</span> v4si<span style="color:#f92672">*</span> vector) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;{ &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> LENGTH; <span style="color:#f92672">++</span>i) <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;%d &#34;</span>, (<span style="color:#f92672">*</span>vector)[i]);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;}&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    v4si a <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
+</span></span><span style="display:flex;"><span>    v4si b <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>};
+</span></span><span style="display:flex;"><span>    v4si c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">print_vector</span>(<span style="color:#f92672">&amp;</span>a);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34; + &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">print_vector</span>(<span style="color:#f92672">&amp;</span>b);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34; = &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">print_vector</span>(<span style="color:#f92672">&amp;</span>c);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Compiling it and executing it:</p>
 <pre tabindex="0"><code>$ gcc -o vector_sum vector_sum.c 
 
 $ ./vector_sum 
 
 { 1 2 3 4 } + { 5 6 7 8 } = { 6 8 10 12 }
 </code></pre><p>A silly benchmark:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;time.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">#define LENGTH 4
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">int</span> v4si <span style="color:#a6e22e">__attribute__</span> ((vector_size (LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>))));
-
-<span style="color:#75715e">// Summing two scalar values per iteration
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">regular_sum</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>a, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>b, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>c) {
-    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> LENGTH; <span style="color:#f92672">++</span>i) {
-        c[i] <span style="color:#f92672">=</span> a[i] <span style="color:#f92672">+</span> b[i];
-    }
-}
-
-<span style="color:#75715e">// Summing two vectors at once (no iteration)
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">vector_extensions_sum</span>(<span style="color:#66d9ef">const</span> v4si <span style="color:#f92672">*</span>a, <span style="color:#66d9ef">const</span> v4si <span style="color:#f92672">*</span>b, v4si <span style="color:#f92672">*</span>result) {
-    <span style="color:#f92672">*</span>result <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>a <span style="color:#f92672">+</span> <span style="color:#f92672">*</span>b;
-}
-
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">benchmark</span>(<span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>func)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>), <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>a, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>b) {
-    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">int</span> ITERATIONS <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000000000</span>; <span style="color:#75715e">// one billion
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">union</span> { <span style="color:#66d9ef">int</span> int_c[LENGTH]; v4si vec_c; } throwaway_result;
-
-    clock_t start <span style="color:#f92672">=</span> clock(); <span style="color:#75715e">// getting start time
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> ITERATIONS; <span style="color:#f92672">++</span>i) func(a, b, <span style="color:#f92672">&amp;</span>throwaway_result); <span style="color:#75715e">// iterating a billion times
-</span><span style="color:#75715e"></span>    clock_t end <span style="color:#f92672">=</span> clock(); <span style="color:#75715e">// getting end time
-</span><span style="color:#75715e"></span>
-    printf(<span style="color:#e6db74">&#34;%f seconds</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ((<span style="color:#66d9ef">double</span>)(end <span style="color:#f92672">-</span> start)) <span style="color:#f92672">/</span> CLOCKS_PER_SEC);
-}
-
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-    <span style="color:#66d9ef">int</span> a[LENGTH] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
-    <span style="color:#66d9ef">int</span> b[LENGTH] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>};
-    
-    v4si va <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
-    v4si vb <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>};
-
-    printf(<span style="color:#e6db74">&#34;Regular sum: &#34;</span>);
-    benchmark((<span style="color:#66d9ef">void</span>(<span style="color:#f92672">*</span>)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>))regular_sum, a, b);
-
-    printf(<span style="color:#e6db74">&#34;Vector extensions sum: &#34;</span>);
-    benchmark((<span style="color:#66d9ef">void</span>(<span style="color:#f92672">*</span>)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>))vector_extensions_sum, <span style="color:#f92672">&amp;</span>va, <span style="color:#f92672">&amp;</span>vb);
-
-    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-}
-</code></pre></div><p>Here&rsquo;s the numbers from my Ryzen 5 4600H:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;time.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define LENGTH 4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">int</span> v4si <span style="color:#a6e22e">__attribute__</span> ((<span style="color:#a6e22e">vector_size</span> (LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>))));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Summing two scalar values per iteration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">regular_sum</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>a, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>b, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>c) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> LENGTH; <span style="color:#f92672">++</span>i) {
+</span></span><span style="display:flex;"><span>        c[i] <span style="color:#f92672">=</span> a[i] <span style="color:#f92672">+</span> b[i];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Summing two vectors at once (no iteration)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">vector_extensions_sum</span>(<span style="color:#66d9ef">const</span> v4si <span style="color:#f92672">*</span>a, <span style="color:#66d9ef">const</span> v4si <span style="color:#f92672">*</span>b, v4si <span style="color:#f92672">*</span>result) {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>result <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>a <span style="color:#f92672">+</span> <span style="color:#f92672">*</span>b;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">benchmark</span>(<span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>func)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>), <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>a, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>b) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">int</span> ITERATIONS <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000000000</span>; <span style="color:#75715e">// one billion
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">union</span> { <span style="color:#66d9ef">int</span> int_c[LENGTH]; v4si vec_c; } throwaway_result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">clock_t</span> start <span style="color:#f92672">=</span> <span style="color:#a6e22e">clock</span>(); <span style="color:#75715e">// getting start time
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> ITERATIONS; <span style="color:#f92672">++</span>i) <span style="color:#a6e22e">func</span>(a, b, <span style="color:#f92672">&amp;</span>throwaway_result); <span style="color:#75715e">// iterating a billion times
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">clock_t</span> end <span style="color:#f92672">=</span> <span style="color:#a6e22e">clock</span>(); <span style="color:#75715e">// getting end time
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;%f seconds</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ((<span style="color:#66d9ef">double</span>)(end <span style="color:#f92672">-</span> start)) <span style="color:#f92672">/</span> CLOCKS_PER_SEC);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> a[LENGTH] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> b[LENGTH] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>};
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    v4si va <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>};
+</span></span><span style="display:flex;"><span>    v4si vb <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Regular sum: &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">benchmark</span>((<span style="color:#66d9ef">void</span>(<span style="color:#f92672">*</span>)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>))regular_sum, a, b);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Vector extensions sum: &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">benchmark</span>((<span style="color:#66d9ef">void</span>(<span style="color:#f92672">*</span>)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>))vector_extensions_sum, <span style="color:#f92672">&amp;</span>va, <span style="color:#f92672">&amp;</span>vb);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here&rsquo;s the numbers from my Ryzen 5 4600H:</p>
 <pre tabindex="0"><code>$ gcc -o silly_benchmark silly_benchmark.c 
 
 $ ./silly_benchmark

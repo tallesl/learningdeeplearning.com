@@ -110,65 +110,65 @@ eval rate:            82.15 tokens/s
 </code></pre><h2 id="pytorch">PyTorch</h2>
 <p>To test if PyTorch will run on our GPU, the following script will generate a dummy load, confirming that our GPU is
 indeed being used by PyTorch:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> torch
-<span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
-<span style="color:#f92672">import</span> torch.optim <span style="color:#66d9ef">as</span> optim
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_rocm_and_hip</span>():
-    <span style="color:#66d9ef">if</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#f92672">and</span> torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
-        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ROCm is enabled. ROCm version: </span><span style="color:#e6db74">{</span>torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
-    <span style="color:#66d9ef">elif</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#f92672">and</span> torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
-        print(<span style="color:#e6db74">&#34;ROCm is enabled but HIP runtime is not available.&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
-    <span style="color:#66d9ef">else</span>:
-        print(<span style="color:#e6db74">&#34;ROCm is not enabled.&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
-
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleNet</span>(nn<span style="color:#f92672">.</span>Module):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super(SimpleNet, self)<span style="color:#f92672">.</span>__init__()
-        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">50</span>)
-        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
-        self<span style="color:#f92672">.</span>fc3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">1</span>)
-
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
-        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc1(x))
-        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc2(x))
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc3(x)
-        <span style="color:#66d9ef">return</span> x
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_random_data</span>(batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, device<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cpu&#39;</span>):
-    inputs <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, <span style="color:#ae81ff">10</span>)<span style="color:#f92672">.</span>to(device)
-    targets <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>to(device)
-    <span style="color:#66d9ef">return</span> inputs, targets
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_indefinitely</span>(device):
-    net <span style="color:#f92672">=</span> SimpleNet()<span style="color:#f92672">.</span>to(device)
-    criterion <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>MSELoss()
-    optimizer <span style="color:#f92672">=</span> optim<span style="color:#f92672">.</span>SGD(net<span style="color:#f92672">.</span>parameters(), lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>)
-
-    iteration <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">try</span>:
-        <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
-            inputs, targets <span style="color:#f92672">=</span> generate_random_data(device<span style="color:#f92672">=</span>device)
-            optimizer<span style="color:#f92672">.</span>zero_grad()
-            outputs <span style="color:#f92672">=</span> net(inputs)
-            loss <span style="color:#f92672">=</span> criterion(outputs, targets)
-            loss<span style="color:#f92672">.</span>backward()
-            optimizer<span style="color:#f92672">.</span>step()
-
-            <span style="color:#66d9ef">if</span> iteration <span style="color:#f92672">%</span> <span style="color:#ae81ff">10000</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Iteration </span><span style="color:#e6db74">{</span>iteration<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>item()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-
-            iteration <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
-        print(<span style="color:#e6db74">&#34;Training interrupted. Exiting...&#34;</span>)
-
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;cuda&#39;</span> <span style="color:#66d9ef">if</span> check_rocm_and_hip() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;cpu&#39;</span>
-    train_indefinitely(device)
-</code></pre></div><p>Trying it out:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.optim <span style="color:#66d9ef">as</span> optim
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_rocm_and_hip</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#f92672">and</span> torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ROCm is enabled. ROCm version: </span><span style="color:#e6db74">{</span>torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#f92672">and</span> torch<span style="color:#f92672">.</span>version<span style="color:#f92672">.</span>hip <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;ROCm is enabled but HIP runtime is not available.&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;ROCm is not enabled.&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleNet</span>(nn<span style="color:#f92672">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        super(SimpleNet, self)<span style="color:#f92672">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">50</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc1(x))
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc2(x))
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc3(x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_random_data</span>(batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>, device<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cpu&#39;</span>):
+</span></span><span style="display:flex;"><span>    inputs <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, <span style="color:#ae81ff">10</span>)<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>    targets <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> inputs, targets
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_indefinitely</span>(device):
+</span></span><span style="display:flex;"><span>    net <span style="color:#f92672">=</span> SimpleNet()<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>    criterion <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>MSELoss()
+</span></span><span style="display:flex;"><span>    optimizer <span style="color:#f92672">=</span> optim<span style="color:#f92672">.</span>SGD(net<span style="color:#f92672">.</span>parameters(), lr<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    iteration <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>            inputs, targets <span style="color:#f92672">=</span> generate_random_data(device<span style="color:#f92672">=</span>device)
+</span></span><span style="display:flex;"><span>            optimizer<span style="color:#f92672">.</span>zero_grad()
+</span></span><span style="display:flex;"><span>            outputs <span style="color:#f92672">=</span> net(inputs)
+</span></span><span style="display:flex;"><span>            loss <span style="color:#f92672">=</span> criterion(outputs, targets)
+</span></span><span style="display:flex;"><span>            loss<span style="color:#f92672">.</span>backward()
+</span></span><span style="display:flex;"><span>            optimizer<span style="color:#f92672">.</span>step()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> iteration <span style="color:#f92672">%</span> <span style="color:#ae81ff">10000</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Iteration </span><span style="color:#e6db74">{</span>iteration<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>item()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            iteration <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Training interrupted. Exiting...&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;cuda&#39;</span> <span style="color:#66d9ef">if</span> check_rocm_and_hip() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;cpu&#39;</span>
+</span></span><span style="display:flex;"><span>    train_indefinitely(device)
+</span></span></code></pre></div><p>Trying it out:</p>
 <pre tabindex="0"><code>$ python3 -m venv venv
 
 $ source venv/bin/activate
@@ -185,77 +185,77 @@ Iteration 20000, Loss: 1.1837289333343506
 <strong>&ldquo;HSA_OVERRIDE_GFX_VERSION&rdquo;</strong> first.</p>
 <h2 id="tensorflow">TensorFlow</h2>
 <p>Here&rsquo;s the dummy load script using TensorFlow instead:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
-<span style="color:#f92672">from</span> tensorflow.keras <span style="color:#f92672">import</span> layers, models, optimizers, losses
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_rocm_and_hip</span>():
-    gpus <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>list_physical_devices(<span style="color:#e6db74">&#39;GPU&#39;</span>)
-    <span style="color:#66d9ef">if</span> gpus:
-        <span style="color:#66d9ef">try</span>:
-            <span style="color:#66d9ef">for</span> gpu <span style="color:#f92672">in</span> gpus:
-                details <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>experimental<span style="color:#f92672">.</span>get_device_details(gpu)
-                <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;hip_version&#39;</span> <span style="color:#f92672">in</span> details:
-                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ROCm is enabled. ROCm version: </span><span style="color:#e6db74">{</span>details[<span style="color:#e6db74">&#39;hip_version&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
-            print(<span style="color:#e6db74">&#34;ROCm is enabled but HIP runtime is not available.&#34;</span>)
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
-        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">RuntimeError</span> <span style="color:#66d9ef">as</span> e:
-            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error in getting device details: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
-    <span style="color:#66d9ef">else</span>:
-        print(<span style="color:#e6db74">&#34;ROCm is not enabled.&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
-
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleNet</span>(models<span style="color:#f92672">.</span>Model):
-    <span style="color:#66d9ef">def</span> __init__(self):
-        super(SimpleNet, self)<span style="color:#f92672">.</span>__init__()
-        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">50</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>,))
-        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">50</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>)
-        self<span style="color:#f92672">.</span>fc3 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
-
-    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">call</span>(self, inputs):
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc1(inputs)
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc2(x)
-        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc3(x)
-        <span style="color:#66d9ef">return</span> x
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_random_data</span>(batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>):
-    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal((batch_size, <span style="color:#ae81ff">10</span>))
-    targets <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal((batch_size, <span style="color:#ae81ff">1</span>))
-    <span style="color:#66d9ef">return</span> inputs, targets
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_indefinitely</span>(device):
-    strategy <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>distribute<span style="color:#f92672">.</span>get_strategy()
-    <span style="color:#66d9ef">with</span> strategy<span style="color:#f92672">.</span>scope():
-        net <span style="color:#f92672">=</span> SimpleNet()
-        net<span style="color:#f92672">.</span>build((<span style="color:#66d9ef">None</span>, <span style="color:#ae81ff">10</span>))
-        criterion <span style="color:#f92672">=</span> losses<span style="color:#f92672">.</span>MeanSquaredError(reduction<span style="color:#f92672">=</span>losses<span style="color:#f92672">.</span>Reduction<span style="color:#f92672">.</span>SUM)
-        optimizer <span style="color:#f92672">=</span> optimizers<span style="color:#f92672">.</span>SGD(learning_rate<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>)
-
-        iteration <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-        <span style="color:#66d9ef">try</span>:
-            <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
-                inputs, targets <span style="color:#f92672">=</span> generate_random_data()
-                <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>GradientTape() <span style="color:#66d9ef">as</span> tape:
-                    outputs <span style="color:#f92672">=</span> net(inputs)
-                    loss <span style="color:#f92672">=</span> criterion(targets, outputs)
-                grads <span style="color:#f92672">=</span> tape<span style="color:#f92672">.</span>gradient(loss, net<span style="color:#f92672">.</span>trainable_variables)
-                optimizer<span style="color:#f92672">.</span>apply_gradients(zip(grads, net<span style="color:#f92672">.</span>trainable_variables))
-
-                <span style="color:#66d9ef">if</span> iteration <span style="color:#f92672">%</span> <span style="color:#ae81ff">10000</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Iteration </span><span style="color:#e6db74">{</span>iteration<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>numpy()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-
-                iteration <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
-            print(<span style="color:#e6db74">&#34;Training interrupted. Exiting...&#34;</span>)
-
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/GPU:0&#39;</span> <span style="color:#66d9ef">if</span> check_rocm_and_hip() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;/CPU:0&#39;</span>
-    <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>device(device):
-        train_indefinitely(device)
-</code></pre></div><p>Unfortunately, TensorFlow has been trickier than PyTorch, no matter what I tried I couldn&rsquo;t make it work without
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tensorflow.keras <span style="color:#f92672">import</span> layers, models, optimizers, losses
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_rocm_and_hip</span>():
+</span></span><span style="display:flex;"><span>    gpus <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>list_physical_devices(<span style="color:#e6db74">&#39;GPU&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> gpus:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> gpu <span style="color:#f92672">in</span> gpus:
+</span></span><span style="display:flex;"><span>                details <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>experimental<span style="color:#f92672">.</span>get_device_details(gpu)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;hip_version&#39;</span> <span style="color:#f92672">in</span> details:
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ROCm is enabled. ROCm version: </span><span style="color:#e6db74">{</span>details[<span style="color:#e6db74">&#39;hip_version&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;ROCm is enabled but HIP runtime is not available.&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">RuntimeError</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error in getting device details: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;ROCm is not enabled.&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleNet</span>(models<span style="color:#f92672">.</span>Model):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        super(SimpleNet, self)<span style="color:#f92672">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">50</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>, input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>,))
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">50</span>, activation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc3 <span style="color:#f92672">=</span> layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">call</span>(self, inputs):
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc1(inputs)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc2(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc3(x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_random_data</span>(batch_size<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>):
+</span></span><span style="display:flex;"><span>    inputs <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal((batch_size, <span style="color:#ae81ff">10</span>))
+</span></span><span style="display:flex;"><span>    targets <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>normal((batch_size, <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> inputs, targets
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_indefinitely</span>(device):
+</span></span><span style="display:flex;"><span>    strategy <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>distribute<span style="color:#f92672">.</span>get_strategy()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> strategy<span style="color:#f92672">.</span>scope():
+</span></span><span style="display:flex;"><span>        net <span style="color:#f92672">=</span> SimpleNet()
+</span></span><span style="display:flex;"><span>        net<span style="color:#f92672">.</span>build((<span style="color:#66d9ef">None</span>, <span style="color:#ae81ff">10</span>))
+</span></span><span style="display:flex;"><span>        criterion <span style="color:#f92672">=</span> losses<span style="color:#f92672">.</span>MeanSquaredError(reduction<span style="color:#f92672">=</span>losses<span style="color:#f92672">.</span>Reduction<span style="color:#f92672">.</span>SUM)
+</span></span><span style="display:flex;"><span>        optimizer <span style="color:#f92672">=</span> optimizers<span style="color:#f92672">.</span>SGD(learning_rate<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        iteration <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>                inputs, targets <span style="color:#f92672">=</span> generate_random_data()
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>GradientTape() <span style="color:#66d9ef">as</span> tape:
+</span></span><span style="display:flex;"><span>                    outputs <span style="color:#f92672">=</span> net(inputs)
+</span></span><span style="display:flex;"><span>                    loss <span style="color:#f92672">=</span> criterion(targets, outputs)
+</span></span><span style="display:flex;"><span>                grads <span style="color:#f92672">=</span> tape<span style="color:#f92672">.</span>gradient(loss, net<span style="color:#f92672">.</span>trainable_variables)
+</span></span><span style="display:flex;"><span>                optimizer<span style="color:#f92672">.</span>apply_gradients(zip(grads, net<span style="color:#f92672">.</span>trainable_variables))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> iteration <span style="color:#f92672">%</span> <span style="color:#ae81ff">10000</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Iteration </span><span style="color:#e6db74">{</span>iteration<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>numpy()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                iteration <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;Training interrupted. Exiting...&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/GPU:0&#39;</span> <span style="color:#66d9ef">if</span> check_rocm_and_hip() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;/CPU:0&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> tf<span style="color:#f92672">.</span>device(device):
+</span></span><span style="display:flex;"><span>        train_indefinitely(device)
+</span></span></code></pre></div><p>Unfortunately, TensorFlow has been trickier than PyTorch, no matter what I tried I couldn&rsquo;t make it work without
 resorting to <a href="https://hub.docker.com/r/rocm/tensorflow">AMD&rsquo;s Docker image</a>:</p>
-<pre tabindex="0"><code>docker run -it --device=/dev/kfd --device=/dev/dri --group-add video -v &quot;$PWD&quot;:/data -e HSA_OVERRIDE_GFX_VERSION=11.0.0 -e TF_CPP_MIN_LOG_LEVEL=1 rocm/tensorflow python3 /data/tensorflow_rocm_test.py
+<pre tabindex="0"><code>docker run -it --device=/dev/kfd --device=/dev/dri --group-add video -v &#34;$PWD&#34;:/data -e HSA_OVERRIDE_GFX_VERSION=11.0.0 -e TF_CPP_MIN_LOG_LEVEL=1 rocm/tensorflow python3 /data/tensorflow_rocm_test.py
 </code></pre><h2 id="sources">Sources</h2>
 <ul>
 <li><a href="https://www.geekawhat.com/best-amd-radeon-rx-7600/">Best AMD Radeon RX 7600 Graphics Cards to Buy in 2024</a></li>

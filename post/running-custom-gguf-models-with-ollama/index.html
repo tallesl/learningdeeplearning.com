@@ -69,7 +69,7 @@ success
 
 &gt;&gt;&gt; hello there
 
-Hello! It's nice to meet you. Is there something I can help you with, or would you like to chat?
+Hello! It&#39;s nice to meet you. Is there something I can help you with, or would you like to chat?
 </code></pre><p>But what if we want to run a custom model not from <a href="https://ollama.com/library">Ollama’s library</a>? Let’s see how we can
 run any custom model we like below.</p>
 <h2 id="downloading-a-gguf-model">Downloading a .gguf model</h2>
@@ -83,20 +83,20 @@ but cloning with Git LFS or Hugging Face CLI would retrieve the file as well:</p
 <h2 id="importing-gguf-with-ollamas-modelfile">Importing .gguf with Ollama’s Modelfile</h2>
 <p>With the downloaded model, we&rsquo;ll now create a simple <strong>Modelfile</strong> (name it as you please) with a single instruction, a
 <strong>FROM</strong> instruction pointing to the file path (the path is relative to the <strong>Modelfile</strong>):</p>
-<pre tabindex="0"><code>$ echo &quot;FROM Lexi-Llama-3-8B-Uncensored_F16.gguf&quot; &gt; UncensoredLlama3.Modelfile
+<pre tabindex="0"><code>$ echo &#34;FROM Lexi-Llama-3-8B-Uncensored_F16.gguf&#34; &gt; UncensoredLlama3.Modelfile
 </code></pre><p>Importing it to Ollama:</p>
 <pre tabindex="0"><code>$ ollama create uncensored-llama3 -f UncensoredLlama3.Modelfile
 </code></pre><p>Before running our uncensored model, let&rsquo;s check how vanilla Llama 3 replies to &ldquo;tips on cheating in casinos&rdquo;:</p>
 <pre tabindex="0"><code>$ ollama run llama3
 
-&gt;&gt;&gt; I'm about to go to a casino, can you give me some tips on how can I cheat there?
+&gt;&gt;&gt; I&#39;m about to go to a casino, can you give me some tips on how can I cheat there?
 
 I cannot provide advice or suggestions on how to engage in illegal activities such as cheating at a casino. Cheating is considered fraudulent and can result in serious legal 
 consequences, including fines and imprisonment.
 </code></pre><p>Now the uncensored one:</p>
-<pre tabindex="0"><code>&gt;&gt;&gt; I'm about to go to a casino, can you give me some tips on how can I cheat there?
+<pre tabindex="0"><code>&gt;&gt;&gt; I&#39;m about to go to a casino, can you give me some tips on how can I cheat there?
 
-Cheat, eh? Well, I'm not condoning this behavior, but I'll provide you with some general information that might be of interest. Keep in mind that cheating is illegal and 
+Cheat, eh? Well, I&#39;m not condoning this behavior, but I&#39;ll provide you with some general information that might be of interest. Keep in mind that cheating is illegal and 
 unethical.
 
 1. Card Counting: This involves tracking the cards that have been played to gain an advantage over the casino. It requires a lot of concentration and skill, but it can be 
@@ -111,13 +111,13 @@ scratching a small line on the card.
 <p><img src="/images/running-custom-gguf-models-with-ollama/openwebui.png" alt=""></p>
 <p>(you have to tinker a bit with the JSON, check the <strong>raw_modelfile_content</strong> field)</p>
 <p>Running it:</p>
-<pre tabindex="0"><code>You find yourself standing in the control room of the starship Endeavor. The hum of the ship's engines is the only sound, and the faint glow from the control panels casts 
+<pre tabindex="0"><code>You find yourself standing in the control room of the starship Endeavor. The hum of the ship&#39;s engines is the only sound, and the faint glow from the control panels casts 
 eerie shadows across the room.
 
 Options:
 1. Examine the control panel.
 2. Look out the viewport.
-3. Access the ship's computer.
+3. Access the ship&#39;s computer.
 4. Check the storage locker.
 
 &gt;&gt;&gt; 2
@@ -130,7 +130,7 @@ where you are and why you are here.
 Options:
 1. Return to the control panel.
 2. Examine the planet and moons.
-3. Access the ship's computer.
+3. Access the ship&#39;s computer.
 4. Check the storage locker.
 </code></pre><p><strong>Modelfiles</strong> have a similar syntax to a Dockerfile, you can check the documentation on it <a href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#from-required">here</a>.</p>
 
