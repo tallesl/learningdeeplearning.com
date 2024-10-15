@@ -128,83 +128,83 @@ computational tasks efficiently, even if the results aren&rsquo;t meant to be re
 general-purpose computing tasks. This development catalyzed breakthroughs in fields like deep learning and scientific
 research.</p>
 <p>To illustrate, here&rsquo;s an example of summing vectors with CUDA:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cuda_runtime.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cublas_v2.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// Function to check and handle CUDA errors
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#66d9ef">cudaError_t</span> status) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> cudaSuccess) {
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fprintf</span>(stderr, <span style="color:#e6db74">&#34;CUDA error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">cudaGetErrorString</span>(status));
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">exit</span>(EXIT_FAILURE);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// Function to check and handle cuBLAS errors
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#66d9ef">cublasStatus_t</span> status) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> CUBLAS_STATUS_SUCCESS) {
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fprintf</span>(stderr, <span style="color:#e6db74">&#34;cuBLAS error: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">exit</span>(EXIT_FAILURE);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// Function to print vectors
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">printVector</span>(<span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>vector, <span style="color:#66d9ef">int</span> size) {
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[&#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> size; i<span style="color:#f92672">++</span>) {
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34; %g&#34;</span>, vector[i]);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34; ]&#34;</span>);
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Vectors in RAM
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> ramVectorA[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">2.0f</span>, <span style="color:#ae81ff">3.0f</span>, <span style="color:#ae81ff">4.0f</span>};
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ramVectorB[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5.0f</span>, <span style="color:#ae81ff">6.0f</span>, <span style="color:#ae81ff">7.0f</span>, <span style="color:#ae81ff">8.0f</span>};
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ramVectorResult[<span style="color:#ae81ff">4</span>];
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// VRAM pointers
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>vramVectorA, <span style="color:#f92672">*</span>vramVectorB, <span style="color:#f92672">*</span>vramVectorResult;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> LENGTH <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate VRAM memory
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#a6e22e">cudaMalloc</span>((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorA, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#a6e22e">cudaMalloc</span>((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorB, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#a6e22e">cudaMalloc</span>((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorResult, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create cuBLAS handle
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">cublasHandle_t</span> handle;
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#a6e22e">cublasCreate</span>(<span style="color:#f92672">&amp;</span>handle));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Copy data from RAM to VRAM
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#a6e22e">cublasSetVector</span>(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), ramVectorA, <span style="color:#ae81ff">1</span>, vramVectorA, <span style="color:#ae81ff">1</span>));
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#a6e22e">cublasSetVector</span>(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), ramVectorB, <span style="color:#ae81ff">1</span>, vramVectorB, <span style="color:#ae81ff">1</span>));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Perform vector addition: vramVectorResult = alpha * vramVectorA + vramVectorB
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#a6e22e">cublasSaxpy</span>(handle, LENGTH, <span style="color:#f92672">&amp;</span>alpha, vramVectorA, <span style="color:#ae81ff">1</span>, vramVectorB, <span style="color:#ae81ff">1</span>));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Copy result back to RAM
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#a6e22e">cublasGetVector</span>(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), vramVectorB, <span style="color:#ae81ff">1</span>, ramVectorResult, <span style="color:#ae81ff">1</span>));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Print result
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">printVector</span>(ramVectorA, LENGTH);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34; + &#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printVector</span>(ramVectorB, LENGTH);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34; = &#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printVector</span>(ramVectorResult, LENGTH);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Clean up
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#a6e22e">cudaFree</span>(vramVectorA));
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#a6e22e">cudaFree</span>(vramVectorB));
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCudaError</span>(<span style="color:#a6e22e">cudaFree</span>(vramVectorResult));
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkCublasError</span>(<span style="color:#a6e22e">cublasDestroy</span>(handle));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Compiling and executing it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cuda_runtime.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cublas_v2.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Function to check and handle CUDA errors
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkCudaError</span>(cudaError_t status) {
+    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> cudaSuccess) {
+        fprintf(stderr, <span style="color:#e6db74">&#34;CUDA error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, cudaGetErrorString(status));
+        exit(EXIT_FAILURE);
+    }
+}
+
+<span style="color:#75715e">// Function to check and handle cuBLAS errors
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkCublasError</span>(cublasStatus_t status) {
+    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> CUBLAS_STATUS_SUCCESS) {
+        fprintf(stderr, <span style="color:#e6db74">&#34;cuBLAS error: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status);
+        exit(EXIT_FAILURE);
+    }
+}
+
+<span style="color:#75715e">// Function to print vectors
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">printVector</span>(<span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>vector, <span style="color:#66d9ef">int</span> size) {
+    printf(<span style="color:#e6db74">&#34;[&#34;</span>);
+    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> size; i<span style="color:#f92672">++</span>) {
+        printf(<span style="color:#e6db74">&#34; %g&#34;</span>, vector[i]);
+    }
+    printf(<span style="color:#e6db74">&#34; ]&#34;</span>);
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#75715e">// Vectors in RAM
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> ramVectorA[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">2.0f</span>, <span style="color:#ae81ff">3.0f</span>, <span style="color:#ae81ff">4.0f</span>};
+    <span style="color:#66d9ef">float</span> ramVectorB[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">5.0f</span>, <span style="color:#ae81ff">6.0f</span>, <span style="color:#ae81ff">7.0f</span>, <span style="color:#ae81ff">8.0f</span>};
+    <span style="color:#66d9ef">float</span> ramVectorResult[<span style="color:#ae81ff">4</span>];
+
+    <span style="color:#75715e">// VRAM pointers
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>vramVectorA, <span style="color:#f92672">*</span>vramVectorB, <span style="color:#f92672">*</span>vramVectorResult;
+    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> LENGTH <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span>;
+
+    <span style="color:#75715e">// Allocate VRAM memory
+</span><span style="color:#75715e"></span>    checkCudaError(cudaMalloc((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorA, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+    checkCudaError(cudaMalloc((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorB, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+    checkCudaError(cudaMalloc((<span style="color:#66d9ef">void</span><span style="color:#f92672">**</span>)<span style="color:#f92672">&amp;</span>vramVectorResult, LENGTH <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+
+    <span style="color:#75715e">// Create cuBLAS handle
+</span><span style="color:#75715e"></span>    cublasHandle_t handle;
+    checkCublasError(cublasCreate(<span style="color:#f92672">&amp;</span>handle));
+
+    <span style="color:#75715e">// Copy data from RAM to VRAM
+</span><span style="color:#75715e"></span>    checkCublasError(cublasSetVector(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), ramVectorA, <span style="color:#ae81ff">1</span>, vramVectorA, <span style="color:#ae81ff">1</span>));
+    checkCublasError(cublasSetVector(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), ramVectorB, <span style="color:#ae81ff">1</span>, vramVectorB, <span style="color:#ae81ff">1</span>));
+
+    <span style="color:#75715e">// Perform vector addition: vramVectorResult = alpha * vramVectorA + vramVectorB
+</span><span style="color:#75715e"></span>    checkCublasError(cublasSaxpy(handle, LENGTH, <span style="color:#f92672">&amp;</span>alpha, vramVectorA, <span style="color:#ae81ff">1</span>, vramVectorB, <span style="color:#ae81ff">1</span>));
+
+    <span style="color:#75715e">// Copy result back to RAM
+</span><span style="color:#75715e"></span>    checkCublasError(cublasGetVector(LENGTH, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), vramVectorB, <span style="color:#ae81ff">1</span>, ramVectorResult, <span style="color:#ae81ff">1</span>));
+
+    <span style="color:#75715e">// Print result
+</span><span style="color:#75715e"></span>    printVector(ramVectorA, LENGTH);
+    printf(<span style="color:#e6db74">&#34; + &#34;</span>);
+    printVector(ramVectorB, LENGTH);
+    printf(<span style="color:#e6db74">&#34; = &#34;</span>);
+    printVector(ramVectorResult, LENGTH);
+    printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+
+    <span style="color:#75715e">// Clean up
+</span><span style="color:#75715e"></span>    checkCudaError(cudaFree(vramVectorA));
+    checkCudaError(cudaFree(vramVectorB));
+    checkCudaError(cudaFree(vramVectorResult));
+    checkCublasError(cublasDestroy(handle));
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>Compiling and executing it:</p>
 <pre tabindex="0"><code>$ nvcc -o vector_sum vector_sum.cu -lcublas
 
 $ ./vector_sum

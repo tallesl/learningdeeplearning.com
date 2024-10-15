@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Notes on learning deep learning and everything LLM-related">
+    <title>Understanding Vector Databases (with Chroma) | Learning Deep Learning</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <style>
+  body {
+    background-image: radial-gradient(#8e8 1.2px, #eee 1.2px);
+    background-size: 12px 12px;
+  }
+
+  main img {
+    display: block;
+    margin: 0 auto;
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KEE68WFE95"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KEE68WFE95');
+</script>
+
+  </head>
+
+  <header style="text-align: center;">
+    
+      <a href="https://learningdeeplearning.com/">
+        <img src="https://learningdeeplearning.com/images/logo.png" alt="Logo" style="max-width: 200px; height: auto; margin: 0 auto; display: block;">
+      </a>
+    
+  </header>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Understanding Vector Databases (with Chroma)</span></h1>
+
+<p class="date">Oct 15, 2024</p>
+</div>
+
+<main>
+<p>In this article, we will dive into how vector databases work, exploring <strong>Chroma</strong> and its underlying search library,
+<strong>hnswlib</strong>, along with understanding <strong>embeddings</strong> and <strong>embeddings models</strong>.</p>
+<p>Most of the article will focus understanding things conceptually, what&rsquo;s discussed here should help you
+understand how other vector database work too.</p>
+<p>Since few might read this other than myself (right?), I&rsquo;ll take the liberty to add a pinch of philosophy and linguistics
+before getting into the technical nitty-gritty.</p>
+<h2 id="wittgensteins-philosophical-investigations-1953">Wittgenstein&rsquo;s Philosophical Investigations (1953)</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/wittgenstein.png" alt=""></p>
+<p><strong>Ludwig Wittgenstein</strong> is an unique philosopher, and this doesn&rsquo;t refer to the writing style of the <em>Tractatus</em>. He&rsquo;s
+one of the few philosophers where there is not only a clear difference between his earlier and later work, but the
+&lsquo;second stage&rsquo; Wittgenstein attempts to correct the first.</p>
+<p>The first Wittgenstein tried to ground the logic of the world in the logic of language:</p>
+<blockquote>
+<p>&ldquo;the limits of my language are the limits of my world&rdquo;</p>
+</blockquote>
+<blockquote>
+<p>&ldquo;whereof one cannot speak, thereof one must be silent&rdquo;</p>
+</blockquote>
+<p>He succeeded in doing so, helping lay the basis for an entire philosophical movement, analytical philosophy that is.</p>
+<p>Later in life, Wittgenstein changed his views. In his philosophical investigations, he revised his ideas about language
+and meaning, concluding that meaning is situational and not a conclusion from some inherent logic of how language works:</p>
+<blockquote>
+<p>&ldquo;(…) The language is meant to serve for communication between a builder A and an assistant B. A is building with
+building-stones: there are blocks, pillars, slabs and beams. B has to pass the stones, and that in the order in which A
+needs them. For this purpose they use a language consisting of the words &ldquo;block&rdquo;, &ldquo;pillar&rdquo;, &ldquo;slab&rdquo;, &ldquo;beam&rdquo;. (…) Because
+if you shout &ldquo;Slab!&rdquo; you really mean: &ldquo;Bring me a slab&rdquo;</p>
+</blockquote>
+<p>In the famous example above, there is a small <strong>language game</strong> between builder A and assistant B, consisted of just
+four words (or tokens), &lsquo;slab&rsquo; being of them. It&rsquo;s a fully functional language, the context (two builders working
+together) are the glue which makes it works.</p>
+<p>The meaning it&rsquo;s derived from what&rsquo;s around the words, not the words itself.</p>
+<h2 id="zelig-harris-distributional-structure-1954">Zelig Harris' Distributional Structure (1954)</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/harris.png" alt=""></p>
+<p>While not necessarily directly influenced by Wittgenstein, but in tandem with his ideas, the linguistic <strong>Zelig Harris</strong>
+writes:</p>
+<blockquote>
+<p>&ldquo;Meaning is not a unique property of language, but a general characteristic of human activity. (…) And if we consider
+the individual aspects of experience, the way a person&rsquo;s store of meanings grows and changes through the years while his
+language remains fairly constant, or the way a person can have an idea or a feeling which he cannot readily express in
+the language available to him, we see that the structure of language does not necessarily conform to the structure of
+subjective experience, of the subjective world of meanings.&rdquo;</p>
+</blockquote>
+<p>Following along the same article, he highlights the importance of relative frequency (rather than linguistic rules) of
+word occurrences:</p>
+<blockquote>
+<p>&ldquo;there are many sentence environments in which oculist occurs but lawyer does not: e.g. &lsquo;I&rsquo;ve had my eyes examined by
+the same oculist for twenty years&rsquo;, or &lsquo;Oculists often have their prescription blanks printed for them by opticians&rsquo;. It
+is not a question of whether the above sentence with lawyer substituted is true or not; it might be true in some
+situation. It is rather a question of the relative frequency of such environments with oculist and with lawyer (…)&rdquo;</p>
+</blockquote>
+<p>And later concludes and emphasizes how meaning arises from <strong>usage and frequency</strong> in language, and not from fixed
+predetermined rules:</p>
+<blockquote>
+<p>&ldquo;we cannot directly investigate the rules of &lsquo;the language&rsquo; via some system of habits or some neurological machine
+that generates all the utterances of the language. We have to investigate some actual corpus of utterances, and derive
+therefrom such regularities (…)&rdquo;</p>
+</blockquote>
+<h2 id="john-r-firths-studies-in-linguistic-analysis-1957">John R. Firth&rsquo;s Studies in Linguistic Analysis (1957)</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/firth.png" alt=""></p>
+<p><strong>John Rupert Firth</strong>, another influential linguist, echoed Wittgenstein’s approach to meaning:</p>
+<blockquote>
+<p>&ldquo;As Wittgenstein says, &lsquo;the meaning of words lies in their use.&rsquo; The day-to-day practice of playing language games
+recognizes customs and rules. It follows that a text in such established usage may contain sentences such as &lsquo;Don&rsquo;t be
+such an ass!&rsquo;, &lsquo;You silly ass!&rsquo;, &lsquo;What an ass he is!&rsquo; In these examples, the word ass is in familiar and habitual
+company, commonly collocated with you silly—, he is a silly—, don&rsquo;t be such an—. You shall know a word by the company it
+keeps!&rdquo;</p>
+</blockquote>
+<p>The last statement of the citation in particular, <strong>&ldquo;you shall know a word by the company it keeps&rdquo;</strong>, became a motto
+for this idea. Firth’s emphasis on <strong>collocation</strong> (companion words) became a key concept in corpus linguistics and
+computational language analysis.</p>
+<h2 id="word-embeddings-with-word2vec-2013">Word Embeddings with word2vec (2013)</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/mikolov.png" alt=""></p>
+<p><strong>Word2Vec</strong> was the seminal embedding model developed by <strong>Tomas Mikolov</strong> and team at Google in 2013. It was
+revolutionary because it demonstrated how the meanings of words can be captured by dense vectors, where most elements
+are non-zero.  After training the model, one could perform algebra-like operations on the vectors and get &lsquo;semantic
+results&rsquo;, like the well-known example of approximating the vector for the word <strong>&ldquo;queen&rdquo;</strong> by performing the calculation
+<strong>&ldquo;king - man + woman&rdquo;</strong>.</p>
+<p>It offered two distinct ways to train a model: <strong>Continuous Bag of Words (CBOW)</strong> and <strong>Skip-gram</strong>. In CBOW, the model
+is given surrounding context words and attempts to predict the target word in the middle, such as predicting &ldquo;like&rdquo; in
+the sentence &ldquo;I ___ candy&rdquo;. In contrast, the Skip-gram model takes a target word (&ldquo;like&rdquo;) and tries to predict its
+surrounding words (&ldquo;I&rdquo; and &ldquo;candy&rdquo;).</p>
+<p><img src="/images/understanding-vector-databases-with-chroma/word2vec.png" alt=""></p>
+<p>The model&rsquo;s vocabulary is created by extracting all unique words from a corpus of texts. Words are ordered from most
+frequent to least frequent. Infrequent words are dropped (words below a frequency threshold). High-frequency words (like
+stop words) may be downsampled to reduce their dominance in the training process.</p>
+<p>After the model is trained (either with CBOW or Skip-gram), we can forward pass each word into the network, get a
+resulting vector, and build a lookup table with it (where the key is the word and the value the dense vector). That
+essentially caches the produced embeddings by the model and allows an application that wants to use such embeddings to
+just look it up in the table. In other words, you can refer directly to this <strong>embedding matrix</strong> to get its embeddings,
+avoiding a forward pass to be performed on the actual model.</p>
+<p>Let&rsquo;s see it in action with the <strong>gensim</strong> package:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> gensim.downloader <span style="color:#f92672">import</span> load <span style="color:#75715e"># pip install gensim</span>
+
+model <span style="color:#f92672">=</span> load(<span style="color:#e6db74">&#39;word2vec-google-news-300&#39;</span>) <span style="color:#75715e"># downloads 1.7 GB to ~/gensim-data</span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">display_similar_word</span>(input_word):
+    similar_words <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>most_similar(input_word)
+
+    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Similar words for &#34;</span><span style="color:#e6db74">{</span>input_word<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;:&#39;</span>)
+    <span style="color:#66d9ef">for</span> word, similarity <span style="color:#f92672">in</span> similar_words:
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;• </span><span style="color:#e6db74">{</span>word<span style="color:#e6db74">}</span><span style="color:#e6db74"> (</span><span style="color:#e6db74">{</span>similarity<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#39;</span>)
+    print()
+
+display_similar_word(<span style="color:#e6db74">&#39;spaghetti&#39;</span>)
+display_similar_word(<span style="color:#e6db74">&#39;mario&#39;</span>)
+
+<span style="color:#75715e"># Similar words for &#34;spaghetti&#34;:</span>
+<span style="color:#75715e"># • pasta (0.6603320837020874)</span>
+<span style="color:#75715e"># • ziti (0.6336025595664978)</span>
+<span style="color:#75715e"># • rigatoni (0.6329466700553894)</span>
+<span style="color:#75715e"># • Spaghetti (0.6238144636154175)</span>
+<span style="color:#75715e"># • meatball_dinner (0.5845874547958374)</span>
+<span style="color:#75715e"># • meatball_supper (0.5811535120010376)</span>
+<span style="color:#75715e"># • spaghetti_noodles (0.5772687792778015)</span>
+<span style="color:#75715e"># • linguine (0.5770878195762634)</span>
+<span style="color:#75715e"># • fusilli (0.5688321590423584)</span>
+<span style="color:#75715e"># • homemade_meatballs (0.5670261979103088)</span>
+
+<span style="color:#75715e"># Similar words for &#34;mario&#34;:</span>
+<span style="color:#75715e"># • zelda (0.6978971362113953)</span>
+<span style="color:#75715e"># • ps2 (0.6641138195991516)</span>
+<span style="color:#75715e"># • nintendo (0.6476219296455383)</span>
+<span style="color:#75715e"># • super_mario (0.6462492942810059)</span>
+<span style="color:#75715e"># • psp (0.6432690620422363)</span>
+<span style="color:#75715e"># • ps1 (0.6347845196723938)</span>
+<span style="color:#75715e"># • ricky (0.626514732837677)</span>
+<span style="color:#75715e"># • gamecube (0.6250814199447632)</span>
+<span style="color:#75715e"># • naruto (0.6235296726226807)</span>
+<span style="color:#75715e"># • lol (0.6227648258209229)</span>
+</code></pre></div><h2 id="subword-embeddings-with-fasttext-2016">Subword Embeddings with FastText (2016)</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/fasttext.png" alt=""></p>
+<p>Three years after word2vec, Tomas Mikolov and his colleagues at Facebook developed <strong>FastText</strong>, a new embedding
+technique similar to word2vec, but this time working with <strong>subwords</strong>. Instead of treating each word as a token,
+FastText breaks words down into character-based n-grams, typically ranging from 3-grams to 6-grams, and creates
+embeddings from these n-grams.</p>
+<p>FastText can generalize meanings for unseen words during training, as long as those words are composed of known n-grams.</p>
+<h2 id="document-embeddings-with-contemporary-models-like-openais-ada">Document Embeddings with Contemporary Models (like OpenAI&rsquo;s Ada)</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/ada.png" alt=""></p>
+<p>Building on earlier, simpler embedding models, modern embeddings are more complex and are trained to <strong>operate on entire
+sequences of text, such as paragraphs or entire documents</strong>. The simple lookup in an embedding matrix is no longer
+sufficient. Instead, embeddings are generated through a forward pass in transformer-based models, which uses mechanisms
+like attention to produce contextualized embeddings.</p>
+<p>Despite the complexity involved in training and generating those embeddings, the same distance and similarity principles
+of word embeddings apply to sentence-level embeddings as well. This means that semantic relationships can still be
+inferred based on the proximity of vectors in the vector space, allowing for meaning to be inferred through calculating
+vector distances.</p>
+<p>Let’s see in practice how to generate embeddings. With OpenAI’s model:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> openai <span style="color:#f92672">import</span> OpenAI <span style="color:#75715e"># pip install openai</span>
+
+input_text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Hello world!&#39;</span>
+
+<span style="color:#75715e"># assumes that OPENAI_API_KEY environment variable is set</span>
+client <span style="color:#f92672">=</span> OpenAI()
+response <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>embeddings<span style="color:#f92672">.</span>create(model<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;text-embedding-ada-002&#39;</span>, input<span style="color:#f92672">=</span>input_text)
+embedding <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>embedding
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Input: </span><span style="color:#e6db74">{</span>input_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Dimensions: </span><span style="color:#e6db74">{</span>len(embedding)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Values: </span><span style="color:#e6db74">{</span>str(embedding)[:<span style="color:#ae81ff">50</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#39;</span>)
+
+<span style="color:#75715e"># Input: Hello world!</span>
+<span style="color:#75715e"># Dimensions: 1536</span>
+<span style="color:#75715e"># Values: [0.006591646, 0.0036574828, -0.011824708, -0.02684...</span>
+</code></pre></div><p>With Google’s Gemini:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> google.generativeai <span style="color:#f92672">import</span> embed_content <span style="color:#75715e"># pip install google-generativeai</span>
+
+input_text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Hello world!&#39;</span>
+
+<span style="color:#75715e"># assumes that GEMINI_API_KEY environment variable is set</span>
+response <span style="color:#f92672">=</span> embed_content(model<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;models/text-embedding-004&#39;</span>, content<span style="color:#f92672">=</span>input_text)
+embedding <span style="color:#f92672">=</span> response[<span style="color:#e6db74">&#39;embedding&#39;</span>]
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Input: </span><span style="color:#e6db74">{</span>input_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Dimensions: </span><span style="color:#e6db74">{</span>len(embedding)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Values: </span><span style="color:#e6db74">{</span>str(embedding)[:<span style="color:#ae81ff">50</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#39;</span>)
+
+<span style="color:#75715e"># Input: Hello world!</span>
+<span style="color:#75715e"># Dimensions: 768</span>
+<span style="color:#75715e"># Values: [0.00550769, -0.0112438, -0.06099073, -0.008677562...</span>
+</code></pre></div><p>Locally with Ollama:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> ollama <span style="color:#f92672">import</span> embeddings <span style="color:#75715e"># pip install ollama</span>
+
+input_text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Hello world!&#39;</span>
+
+<span style="color:#75715e"># assumes that the model was pulled before hand (ollama pull nomic-embed-text)</span>
+response <span style="color:#f92672">=</span> embeddings(model<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;nomic-embed-text&#39;</span>, prompt<span style="color:#f92672">=</span>input_text)
+embedding <span style="color:#f92672">=</span> response[<span style="color:#e6db74">&#39;embedding&#39;</span>]
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Input: </span><span style="color:#e6db74">{</span>input_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Dimensions: </span><span style="color:#e6db74">{</span>len(embedding)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Values: </span><span style="color:#e6db74">{</span>str(embedding)[:<span style="color:#ae81ff">50</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#39;</span>)
+
+<span style="color:#75715e"># Input: Hello world!</span>
+<span style="color:#75715e"># Dimensions: 768</span>
+<span style="color:#75715e"># Values: [0.12398265302181244, -0.0613756962120533, -3.9841...</span>
+</code></pre></div><h2 id="finding-related-embeddings-with-k-nearest-neighbors">Finding Related Embeddings with K-Nearest Neighbors</h2>
+<p>As the philosophers and linguistics have alluded, and as the embedding models have shown mathematically, meaning comes
+from the surrounding text. But how do we make use of embeddings?</p>
+<p>Similarity search. Similar embeddings (in meaning) should be collocated in the vector space, in other words, they should
+be closer together in the Euclidian space.</p>
+<p>Enter <strong>K-Nearest Neighbors</strong> algorithm, or KNN for short: given a point in space (the vector in hand), find the K
+closest neighbors (where <strong>K is an user-defined value</strong>, such as 3 or 35).</p>
+<p><img src="/images/understanding-vector-databases-with-chroma/knn.png" alt=""></p>
+<p>Searching for embeddings based on distance can serve as a replacement for traditional full-text search. Instead of
+relying on morphological operations like lemmatization or calculating levenshtein distance, we can match semantically
+meaningful (neighboring) words/chunks/documents.</p>
+<p>Unfortunately, a non-optimized method for computing KNN is rather inefficient: it involves calculating the distance
+against all vectors before selecting the nearest.</p>
+<h2 id="its-a-small-world-isnt-it">It&rsquo;s a Small World, Isn&rsquo;t It?</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/smallworld.png" alt=""></p>
+<p>There&rsquo;s no shame in quoting Wikipedia:</p>
+<blockquote>
+<p>&ldquo;A small world network is a graph characterized by a high clustering coefficient and low distances.&rdquo;</p>
+</blockquote>
+<p>In other words, in a <strong>small world network</strong>, any two randomly chosen nodes will have a short connecting path between
+them. These short paths are what make the network &lsquo;small&rsquo;.</p>
+<p><strong>Hierarchical Navigable Small World (HNSW)</strong> is an algorithm, officially implemented as the <strong>hnswlib</strong> library, that
+addresses the previously mentioned performance issue by making a stack of many interconnected small worlds.</p>
+<p>Instead of organizing all vectors in a flat space, HNSW structures them into multiple layered &ldquo;small worlds.&rdquo; Each layer
+is a subset of the vectors, forming its own graph where nodes (vectors) are connected to their nearest neighbors that
+layer. Additionally, each node is also linked vertically to nodes in the layer below, allowing the algorithm to
+<strong>navigate horizontally and vertically</strong> to find its target.</p>
+<p><img src="/images/understanding-vector-databases-with-chroma/hnsw.png" alt=""></p>
+<p>As a side note, small world networks not only apply to computing but also to social sciences. Ever heard of the <a href="https://en.wikipedia.org/wiki/Six_degrees_of_separation">&ldquo;six
+degrees of separation idea&rdquo;</a>? That is the concept that all
+people are six or fewer social connections away from each other (&lsquo;friend of a friend&rsquo;).</p>
+<h2 id="storing-and-retrieving-embeddings-with-chroma">Storing and Retrieving Embeddings with Chroma</h2>
+<p><img src="/images/understanding-vector-databases-with-chroma/chroma.png" alt=""></p>
+<p>Let&rsquo;s explore how to store and query embeddings using Chroma, one of the simplest vector databases available at the time
+of writing.</p>
+<p>To begin, we’ll set up Chroma and create an empty database. The process is simple using Python:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> chromadb <span style="color:#f92672">import</span> PersistentClient <span style="color:#75715e"># pip install chromadb</span>
+<span style="color:#f92672">from</span> chromadb.utils.embedding_functions <span style="color:#f92672">import</span> OllamaEmbeddingFunction
+client <span style="color:#f92672">=</span> PersistentClient()
+ollama_embedding <span style="color:#f92672">=</span> OllamaEmbeddingFunction(model_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;nomic-embed-text&#39;</span>, url<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://localhost:11434/api/embeddings&#39;</span>)
+collection <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>get_or_create_collection(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;runescape_skills&#39;</span>, embedding_function<span style="color:#f92672">=</span>ollama_embedding)
+</code></pre></div><p>Next, we’ll embed data representing RuneScape skills into our Chroma database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># taken from https://www.runescape.com/game-guide/skills</span>
+runescape_skills <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#39;Agility&#39;</span>: <span style="color:#e6db74">&#39;Improves run energy regeneration rate, as well as allowing access to shortcuts around the world.&#39;</span>,
+    <span style="color:#e6db74">&#39;Archaeology&#39;</span>: <span style="color:#e6db74">&#39;Uncover lost knowledge that grants access to ancient summoning, ancient invention and relics that offer passive benefits whenever you play.&#39;</span>,
+    <span style="color:#e6db74">&#39;Attack&#39;</span>: <span style="color:#e6db74">&#39;Improves your accuracy in Melee combat. Also allows the use of more powerful weapons.&#39;</span>,
+    <span style="color:#e6db74">&#39;Cooking&#39;</span>: <span style="color:#e6db74">&#39;Allows fish and other food to be cooked on a fire or range. Higher levels allow better foods (that heal more life points) to be prepared.&#39;</span>,
+    <span style="color:#e6db74">&#39;Constitution&#39;</span>: <span style="color:#e6db74">&#39;Increases your maximum amount of life points. Also unlocks several important combat abilities.&#39;</span>,
+    <span style="color:#e6db74">&#39;Construction&#39;</span>: <span style="color:#e6db74">&#39;Allows the creation and improvement of a Player-Owned House. Higher levels allow the creation of more decorative furnishings and rooms.&#39;</span>,
+    <span style="color:#e6db74">&#39;Crafting&#39;</span>: <span style="color:#e6db74">&#39;Allows the creation of a wide range of items such as jewellery, leather armour and battlestaves. Higher levels allow more items to be crafted.&#39;</span>,
+    <span style="color:#e6db74">&#39;Defence&#39;</span>: <span style="color:#e6db74">&#39;Reduces the accuracy of opponents</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74"> attacks from all styles and allows stronger armour to be equipped.&#39;</span>,
+    <span style="color:#e6db74">&#39;Divination&#39;</span>: <span style="color:#e6db74">&#39;Gather the scattered divine energy of Guthix and weave it into powerful portents, signs, and temporary skilling locations.&#39;</span>,
+    <span style="color:#e6db74">&#39;Dungeoneering&#39;</span>: <span style="color:#e6db74">&#39;Allows exploration of the randomly generated dungeons of Daemonheim. Higher levels allow deeper floors to be accessed.&#39;</span>,
+    <span style="color:#e6db74">&#39;Farming&#39;</span>: <span style="color:#e6db74">&#39;Allows crops to be grown for use in other skills, notably herbs for Herblore. Higher levels allow more crop types to be grown.&#39;</span>,
+    <span style="color:#e6db74">&#39;Fishing&#39;</span>: <span style="color:#e6db74">&#39;Allows fish - one of the main sources of food - to be retrieved from bodies of water. Higher levels allow more types of fish to be caught.&#39;</span>,
+    <span style="color:#e6db74">&#39;Firemaking&#39;</span>: <span style="color:#e6db74">&#39;Allows fires to be built from logs. Higher levels allow more types of logs to be burnt.&#39;</span>,
+    <span style="color:#e6db74">&#39;Fletching&#39;</span>: <span style="color:#e6db74">&#39;Allows the creation of bows, arrows, bolts and crossbows from logs. Higher levels allow more advanced items to be made.&#39;</span>,
+    <span style="color:#e6db74">&#39;Herblore&#39;</span>: <span style="color:#e6db74">&#39;Allows the creation of potions from herbs, used to temporarily bestow a variety of different effects. Higher levels create more potent potions.&#39;</span>,
+    <span style="color:#e6db74">&#39;Hunter&#39;</span>: <span style="color:#e6db74">&#39;Allows the trapping of various wild creatures using different methods. Higher levels allow more types of creature to be caught.&#39;</span>,
+    <span style="color:#e6db74">&#39;Invention&#39;</span>: <span style="color:#e6db74">&#39;Customise your gear with cutting-edge augmentations. Invention is an Elite Skill, and requires 80 in Smithing, Crafting and Divination to begin training.&#39;</span>,
+    <span style="color:#e6db74">&#39;Magic&#39;</span>: <span style="color:#e6db74">&#39;Increases accuracy - but not damage - of magic attacks. Allows more spells and better magical weapons and armour to be used. Also increases defence against magic attacks.&#39;</span>,
+    <span style="color:#e6db74">&#39;Mining&#39;</span>: <span style="color:#e6db74">&#39;Allows ore to be obtained from rocks, for use in skills such as Smithing, Crafting and Invention, or to be sold. Higher levels allow rarer, more valuable types of ore to be mined.&#39;</span>,
+    <span style="color:#e6db74">&#39;Necromancy&#39;</span>: <span style="color:#e6db74">&#39;Channel the power of necrotic energy and conjure powerful spirits to fight alongside you in combat.&#39;</span>,
+    <span style="color:#e6db74">&#39;Prayer&#39;</span>: <span style="color:#e6db74">&#39;Grants access to modal buffs, which are useful in many areas of the game. Levelling unlocks new prayers, and allows prayers to stay active for longer.&#39;</span>,
+    <span style="color:#e6db74">&#39;Ranged&#39;</span>: <span style="color:#e6db74">&#39;Increases the accuracy and damage of ranged attacks such as bows, throwing knives and crossbows. and allows the usage of better ranged weapons and armour.&#39;</span>,
+    <span style="color:#e6db74">&#39;Runecrafting&#39;</span>: <span style="color:#e6db74">&#39;Allows the creation of runes for use in magic spells. Higher levels allow more rune types to be made, as well as multiple runes per essence.&#39;</span>,
+    <span style="color:#e6db74">&#39;Slayer&#39;</span>: <span style="color:#e6db74">&#39;Allows otherwise-resilient creatures to be damaged, often using specialist equipment. Higher levels allow more powerful creatures to be slain.&#39;</span>,
+    <span style="color:#e6db74">&#39;Smithing&#39;</span>: <span style="color:#e6db74">&#39;Allows metallic bars and items to be made from ore. Higher levels allow better items to be made from higher-level materials.&#39;</span>,
+    <span style="color:#e6db74">&#39;Strength&#39;</span>: <span style="color:#e6db74">&#39;Improves your maximum hit in melee combat, increasing the amount of damage caused. Higher Strength is also a requirement to wield some weapons.&#39;</span>,
+    <span style="color:#e6db74">&#39;Summoning&#39;</span>: <span style="color:#e6db74">&#39;Allows familiars to be summoned, which help in combat and other activities. Higher levels allow more powerful familiars to be summoned.&#39;</span>,
+    <span style="color:#e6db74">&#39;Thieving&#39;</span>: <span style="color:#e6db74">&#39;Allows the player to steal from NPCs, disarm traps and open certain locked chests. Higher levels reduce failure rate and open up more lucrative targets.&#39;</span>,
+    <span style="color:#e6db74">&#39;Woodcutting&#39;</span>: <span style="color:#e6db74">&#39;Allows trees to be cut down, producing logs for Fletching, Firemaking and Construction. Higher levels allow more types of trees to be cut down, yielding better logs.&#39;</span>
+}
+
+<span style="color:#66d9ef">for</span> name, description <span style="color:#f92672">in</span> runescape_skills:
+    collection<span style="color:#f92672">.</span>upsert(ids<span style="color:#f92672">=</span>name, documents<span style="color:#f92672">=</span>description)
+</code></pre></div><p>And finally, let&rsquo;s query it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">display_results</span>(results):
+    ids <span style="color:#f92672">=</span> results[<span style="color:#e6db74">&#39;ids&#39;</span>][<span style="color:#ae81ff">0</span>]
+    distances <span style="color:#f92672">=</span> results[<span style="color:#e6db74">&#39;distances&#39;</span>][<span style="color:#ae81ff">0</span>]
+    documents <span style="color:#f92672">=</span> results[<span style="color:#e6db74">&#39;documents&#39;</span>][<span style="color:#ae81ff">0</span>]
+
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(ids)):
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;ID: &#34;</span><span style="color:#e6db74">{</span>ids[i]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;&#39;</span>)
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Distance: </span><span style="color:#e6db74">{</span>distances[i]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Document:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>documents[i]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+        print(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--------------------</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+
+query <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Robbery is the crime of taking or attempting to take anything of value by force, threat of force, or by use of fear.&#39;</span>
+query_results <span style="color:#f92672">=</span> collection<span style="color:#f92672">.</span>query(query_texts<span style="color:#f92672">=</span>query, n_results<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+
+<span style="color:#75715e"># Number of requested results 999 is greater than number of elements in index 29, updating n_results = 29</span>
+<span style="color:#75715e">#</span>
+<span style="color:#75715e"># ID: &#34;Thieving&#34;</span>
+<span style="color:#75715e"># Distance: 337.1013233969683</span>
+<span style="color:#75715e"># Document:</span>
+<span style="color:#75715e"># Allows the player to steal from NPCs, disarm traps and open certain locked chests. Higher levels reduce failure rate and open up more lucrative targets.</span>
+<span style="color:#75715e">#</span>
+<span style="color:#75715e">#</span>
+<span style="color:#75715e"># ID: &#34;Prayer&#34;</span>
+<span style="color:#75715e"># Distance: 521.7312542572448</span>
+<span style="color:#75715e"># Document:</span>
+<span style="color:#75715e"># Grants access to modal buffs, which are useful in many areas of the game. Levelling unlocks new prayers, and allows prayers to stay active for longer.</span>
+</code></pre></div><p>As expected, the closest match is &ldquo;Thieving&rdquo; which is semantically related to robbery as both involve taking items
+unlawfully. However, if we examine the results more closely, we’ll see that even though the descriptions don’t share
+many words, embeddings capture the underlying semantic meaning. Take a look:</p>
+<blockquote>
+<p>Robbery is the crime of taking or attempting to take anything of value by force, threat of force, or by use of fear.</p>
+</blockquote>
+<blockquote>
+<p>Allows the player to steal from NPCs, disarm traps and open certain locked chests. Higher levels reduce failure rate
+and open up more lucrative targets.</p>
+</blockquote>
+<p>Somewhat poetically, &ldquo;Prayer&rdquo; is the most distant vector from the robbery description (in our embeddings database).</p>
+<h2 id="where-to-go-next">Where to Go Next</h2>
+<p>Here are some topics to go beyond the basics:</p>
+<ul>
+<li>Hybrid search (embeddings + full text seach): <a href="https://techcommunity.microsoft.com/t5/microsoft-developer-community/doing-rag-vector-search-is-not-enough/ba-p/4161073">Doing RAG? Vector search is <em>not</em> enough</a>.</li>
+<li>Combining rankings from different search methods with RRF: <a href="https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf">Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods</a>.</li>
+<li>Plotting the embedding space with algorithms such as <a href="https://scikit-learn.org/dev/modules/generated/sklearn.decomposition.PCA.html">Principal Component Analysis (PCA)</a>, <a href="https://scikit-learn.org/dev/modules/generated/sklearn.manifold.TSNE.html">t-Distributed Stochastic Neighbor Embedding (t-SNE)</a>, <a href="https://umap-learn.readthedocs.io/">Uniform Manifold Approximation and Projection (UMAP)</a>.</li>
+<li>Having more important information in earlier dimensions and less important in later dimensions: <a href="https://huggingface.co/blog/matryoshka">Matryoshka Embedding Models</a>.</li>
+</ul>
+<h2 id="alternatives">Alternatives</h2>
+<p>Some alternatives to ChromaDB (databases):</p>
+<ul>
+<li><a href="%5Bhttps://github.com/milvus-io/milvus%5D(https://github.com/milvus-io/milvus)">Milvus</a></li>
+<li><a href="%5Bhttps://github.com/qdrant/qdrant%5D(https://github.com/qdrant/qdrant)">Qdrant</a></li>
+<li><a href="%5Bhttps://github.com/weaviate/weaviate%5D(https://github.com/weaviate/weaviate)">Weaviate</a></li>
+<li><a href="%5Bhttps://github.com/vespa-engine/vespa%5D(https://github.com/vespa-engine/vespa)">Vespa</a></li>
+<li><a href="%5Bhttps://www.pinecone.io%5D(https://www.pinecone.io/)">Pinecone</a></li>
+<li><a href="%5Bhttps://redis.io/resources/vectordb-datasheet/%5D(https://redis.io/resources/vectordb-datasheet/)">Redis (with RediSearch module)</a></li>
+<li><a href="%5Bhttps://github.com/pgvector/pgvector%5D(https://github.com/pgvector/pgvector)">PostgreSQL (with pgvector extension)</a></li>
+<li><a href="%5Bhttps://www.mongodb.com/resources/basics/databases/vector-databases%5D(https://www.mongodb.com/resources/basics/databases/vector-databases)">MongoDB (with Atlas Vector Search)</a></li>
+<li><a href="%5Bhttps://redis.io/resources/vectordb-datasheet%5D(https://redis.io/resources/vectordb-datasheet/)">Elasticsearch (with vector search)</a></li>
+</ul>
+<p>And some alternatives search libraries (nearest neighbor implementation):</p>
+<ul>
+<li><a href="%5Bhttps://github.com/facebookresearch/faiss%5D(https://github.com/facebookresearch/faiss)">Faiss</a></li>
+<li><a href="%5Bhttps://github.com/spotify/annoy%5D(https://github.com/spotify/annoy)">Annoy</a></li>
+<li><a href="%5Bhttps://github.com/microsoft/SPTAG%5D(https://github.com/microsoft/SPTAG)">SPTAG</a></li>
+<li><a href="%5Bhttps://github.com/nmslib/nmslib%5D(https://github.com/nmslib/nmslib)">NMSLIB</a></li>
+<li><a href="%5Bhttps://github.com/yahoojapan/NGT%5D(https://github.com/yahoojapan/NGT)">NGT</a></li>
+<li><a href="%5Bhttps://github.com/microsoft/DiskANN%5D(https://github.com/microsoft/DiskANN)">DiskANN</a></li>
+<li><a href="%5Bhttps://github.com/google-research/google-research/tree/master/scann%5D(https://github.com/google-research/google-research/tree/master/scann)">ScaNN</a></li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://www.helsinki.fi/en/projects/von-wright-and-wittgenstein-archives">The von Wright and Wittgenstein Archives (WWA)</a></li>
+<li><a href="https://archive.org/details/philosophicalinvestigations_201911/mode/2up">Ludwig Wittgenstein - Philosophical Investigations (1953)</a></li>
+<li><a href="https://zelligharris.org/">Zellig Harris: Language and Information</a></li>
+<li><a href="https://www.tandfonline.com/doi/pdf/10.1080/00437956.1954.11659520">Zellig S. Harris - Distributional Structure (1954)</a></li>
+<li><a href="https://www.cambridge.org/core/journals/bulletin-of-the-school-of-oriental-and-african-studies/article/john-rupert-firth/D926AFCBF99AD17D5C7A7A9C0558DFDC">John Rupert Firth</a></li>
+<li><a href="https://languagelog.ldc.upenn.edu/myl/Firth1957.pdf">J. R. Firth - Studies in Linguistic Analysis (1957)</a></li>
+<li><a href="https://vesmir.cz/cz/casopis/archiv-casopisu/2019/cislo-9/kral-muz-zena-=-kralovna.html">Král − muž + žena = královna</a></li>
+<li><a href="https://arxiv.org/pdf/1301.3781">Efficient Estimation of Word Representations in Vector Space (2013)</a></li>
+<li><a href="https://fasttext.cc/">fastText</a></li>
+<li><a href="https://openai.com/index/ada/">Ada uses GPT-4 to deliver a new customer service standard</a></li>
+<li><a href="https://www.researchgate.net/figure/k-nearest-neighbors-A-diagram-showing-an-example-of-the-k-nearest-neighbor-machine_fig1_356781515">ResearchGate - k-nearest neighbors</a></li>
+<li><a href="http://snap.stanford.edu/class/cs224w-readings/milgram67smallworld.pdf">Stanley Milgram - The Small-World Problem (1967)</a></li>
+<li><a href="https://arxiv.org/abs/1603.09320">Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs (2016)</a></li>
+<li><a href="https://www.trychroma.com/">Chroma</a></li>
+<li><a href="https://cookbook.chromadb.dev/">Welcome to ChromaDB Cookbook</a></li>
+<li><a href="https://www.runescape.com/game-guide/skills">Skills - RuneScape</a></li>
+<li><a href="https://platform.openai.com/docs/models/embeddings">OpenAI Platform</a></li>
+<li><a href="https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions#embeddings_stable_model_versions">Model versions and lifecycle | Generative AI on Vertex AI | Google Cloud</a></li>
+<li><a href="https://ollama.com/blog/embedding-models">Embedding models · Ollama Blog</a></li>
+</ul>
+
+</main>
+
+    <hr>
+    <footer>
+      <p>
+        <a href="mailto:talleslasmar@gmail.com">📧</a>
+        | 
+        <a href="https://github.com/tallesl"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height: 25px; vertical-align: middle;"></a>
+        |
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0" style="height: 20px; vertical-align: middle;"></a>
+      </p>
+    </footer>
+  </body>
+</html>
+

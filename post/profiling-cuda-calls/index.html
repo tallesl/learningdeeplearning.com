@@ -59,30 +59,30 @@ visualize the execution of CUDA kernels and API calls, providing valuable insigh
 improving GPU efficiency.</p>
 <h2 id="running-a-sample-cuda-code">Running a sample CUDA code</h2>
 <p>First, let&rsquo;s write a basic CUDA program:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cuda_runtime.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>__global__ <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>c)
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b;
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, b <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, c;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>dev_c;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cudaMalloc</span>(<span style="color:#f92672">&amp;</span>dev_c, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>));
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    add<span style="color:#f92672">&lt;&lt;&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span><span style="color:#f92672">&gt;&gt;&gt;</span>(a, b, dev_c);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cudaMemcpy</span>(<span style="color:#f92672">&amp;</span>c, dev_c, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>), cudaMemcpyDeviceToHost);
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;%d + %d is %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, a, b, c);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cudaFree</span>(dev_c);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Compiling it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cuda_runtime.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+__global__ <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>c)
+{
+    <span style="color:#f92672">*</span>c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b;
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, b <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>, c;
+    <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>dev_c;
+
+    cudaMalloc(<span style="color:#f92672">&amp;</span>dev_c, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>));
+
+    add<span style="color:#f92672">&lt;&lt;&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span><span style="color:#f92672">&gt;&gt;&gt;</span>(a, b, dev_c);
+    cudaMemcpy(<span style="color:#f92672">&amp;</span>c, dev_c, <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>), cudaMemcpyDeviceToHost);
+    printf(<span style="color:#e6db74">&#34;%d + %d is %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, a, b, c);
+
+    cudaFree(dev_c);
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>Compiling it:</p>
 <pre tabindex="0"><code>$ nvcc sample.cu -o sample
 </code></pre><h2 id="profiling-calls-with-nvprof">Profiling calls with nvprof</h2>
 <p>We can track the GPU activity of our small test program by simply running it with <code>nvprof</code>:</p>

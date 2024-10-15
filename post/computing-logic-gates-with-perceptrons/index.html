@@ -157,23 +157,23 @@ function to the right, now for x = 0, y = 0.27 (which is just sigmoid(-1), in re
 <p>The NOT gate that inverts the value.</p>
 <p>Using the perceptron algorithm we discussed earlier (weighted sum, bias, and step function), we can implement the NOT
 gate with a single weight and bias.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dot</span>(vector1, vector2):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(vector1, vector2))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">step</span>(x):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">if</span> x <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_perceptron</span>(weights, bias, input):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> step(dot(weights, input) <span style="color:#f92672">+</span> bias)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_not</span>(value):
-</span></span><span style="display:flex;"><span>    not_weights <span style="color:#f92672">=</span> [<span style="color:#f92672">-</span><span style="color:#ae81ff">2.</span>]
-</span></span><span style="display:flex;"><span>    not_bias <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> compute_perceptron(not_weights, not_bias, [value])
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;NOT 0: </span><span style="color:#e6db74">{</span>compute_not(<span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints NOT 0: 1</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;NOT 1: </span><span style="color:#e6db74">{</span>compute_not(<span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints NOT 1: 0</span>
-</span></span></code></pre></div><h2 id="and-and-or-gates">AND and OR gates</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dot</span>(vector1, vector2):
+    <span style="color:#66d9ef">return</span> sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(vector1, vector2))
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">step</span>(x):
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">if</span> x <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_perceptron</span>(weights, bias, input):
+    <span style="color:#66d9ef">return</span> step(dot(weights, input) <span style="color:#f92672">+</span> bias)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_not</span>(value):
+    not_weights <span style="color:#f92672">=</span> [<span style="color:#f92672">-</span><span style="color:#ae81ff">2.</span>]
+    not_bias <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.</span>
+    <span style="color:#66d9ef">return</span> compute_perceptron(not_weights, not_bias, [value])
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;NOT 0: </span><span style="color:#e6db74">{</span>compute_not(<span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints NOT 0: 1</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;NOT 1: </span><span style="color:#e6db74">{</span>compute_not(<span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints NOT 1: 0</span>
+</code></pre></div><h2 id="and-and-or-gates">AND and OR gates</h2>
 <table>
 <thead>
 <tr>
@@ -211,35 +211,35 @@ gate with a single weight and bias.</p>
 </tbody>
 </table>
 <p>Using a couple of weights and a bias, we can compute AND and OR gates.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dot</span>(vector1, vector2):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(vector1, vector2))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">step</span>(x):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">if</span> x <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_perceptron</span>(weights, bias, input):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> step(dot(weights, input) <span style="color:#f92672">+</span> bias)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_and</span>(value_a, value_b):
-</span></span><span style="display:flex;"><span>    and_weights <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2.</span>, <span style="color:#ae81ff">2.</span>]
-</span></span><span style="display:flex;"><span>    and_bias <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">3.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> compute_perceptron(and_weights, and_bias, [value_a, value_b])
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_or</span>(value_a, value_b):
-</span></span><span style="display:flex;"><span>    or_weights <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2.</span>, <span style="color:#ae81ff">2.</span>]
-</span></span><span style="display:flex;"><span>    or_bias <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> compute_perceptron(or_weights, or_bias, [value_a, value_b])
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 AND 0: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 AND 0: 0</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 AND 1: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 AND 1: 0</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 AND 0: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 AND 0: 0</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 AND 1: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 AND 1: 1</span>
-</span></span><span style="display:flex;"><span>print()
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 OR 0: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 OR 0: 0</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 OR 1: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 OR 1: 1</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 OR 0: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 OR 0: 1</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 OR 1: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 OR 1: 1</span>
-</span></span></code></pre></div><h2 id="xor-gate">XOR gate</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dot</span>(vector1, vector2):
+    <span style="color:#66d9ef">return</span> sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(vector1, vector2))
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">step</span>(x):
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">if</span> x <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_perceptron</span>(weights, bias, input):
+    <span style="color:#66d9ef">return</span> step(dot(weights, input) <span style="color:#f92672">+</span> bias)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_and</span>(value_a, value_b):
+    and_weights <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2.</span>, <span style="color:#ae81ff">2.</span>]
+    and_bias <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">3.</span>
+    <span style="color:#66d9ef">return</span> compute_perceptron(and_weights, and_bias, [value_a, value_b])
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_or</span>(value_a, value_b):
+    or_weights <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2.</span>, <span style="color:#ae81ff">2.</span>]
+    or_bias <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1.</span>
+    <span style="color:#66d9ef">return</span> compute_perceptron(or_weights, or_bias, [value_a, value_b])
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 AND 0: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 AND 0: 0</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 AND 1: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 AND 1: 0</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 AND 0: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 AND 0: 0</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 AND 1: </span><span style="color:#e6db74">{</span>compute_and(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 AND 1: 1</span>
+print()
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 OR 0: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 OR 0: 0</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 OR 1: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 OR 1: 1</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 OR 0: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 OR 0: 1</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 OR 1: </span><span style="color:#e6db74">{</span>compute_or(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 OR 1: 1</span>
+</code></pre></div><h2 id="xor-gate">XOR gate</h2>
 <table>
 <thead>
 <tr>
@@ -302,50 +302,50 @@ activated based on its output.</p>
 <h2 id="solving-the-xor-problem">Solving the XOR problem</h2>
 <p>Lastly, let&rsquo;s build our neural network and manually set the weights that we know in advance will allow the network to
 solve the XOR problem.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> math <span style="color:#f92672">import</span> exp
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dot</span>(vector1, vector2):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(vector1, vector2))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sigmoid</span>(x):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> exp(<span style="color:#f92672">-</span>x))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_neuron</span>(weights, inputs):
-</span></span><span style="display:flex;"><span>    bias <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#75715e"># for this example we&#39;ll use a constant bias of 1</span>
-</span></span><span style="display:flex;"><span>    input_with_bias <span style="color:#f92672">=</span> inputs <span style="color:#f92672">+</span> bias <span style="color:#75715e"># making a list with inputs and bias</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sigmoid(dot(weights, input_with_bias))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_network</span>(layers, input):
-</span></span><span style="display:flex;"><span>    outputs <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> layer <span style="color:#f92672">in</span> layers:
-</span></span><span style="display:flex;"><span>        output <span style="color:#f92672">=</span> [compute_neuron(neuron_weights, input) <span style="color:#66d9ef">for</span> neuron_weights <span style="color:#f92672">in</span> layer]
-</span></span><span style="display:flex;"><span>        outputs<span style="color:#f92672">.</span>append(output)
-</span></span><span style="display:flex;"><span>        input <span style="color:#f92672">=</span> output
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> outputs
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_xor</span>(value_a, value_b):
-</span></span><span style="display:flex;"><span>    layers <span style="color:#f92672">=</span> [
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># hidden layer</span>
-</span></span><span style="display:flex;"><span>        [[<span style="color:#ae81ff">20.</span>, <span style="color:#ae81ff">20.</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">30</span>], [<span style="color:#ae81ff">20.</span>, <span style="color:#ae81ff">20.</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">10.</span>]],
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># output layer</span>
-</span></span><span style="display:flex;"><span>        [[<span style="color:#f92672">-</span><span style="color:#ae81ff">60.</span>, <span style="color:#ae81ff">60.</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">30.</span>]]
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    ]
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    outputs <span style="color:#f92672">=</span> compute_network(layers, [value_a, value_b])
-</span></span><span style="display:flex;"><span>    last_output <span style="color:#f92672">=</span> outputs[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> round(last_output)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 XOR 0: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 XOR 0: 0</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 XOR 1: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 XOR 1: 1</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 XOR 0: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 XOR 0: 1</span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 XOR 1: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 XOR 1: 0</span>
-</span></span></code></pre></div><p>We’ve successfully built a neural network to solve the XOR problem, demonstrating how adding layers and using the right
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">from</span> math <span style="color:#f92672">import</span> exp
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dot</span>(vector1, vector2):
+    <span style="color:#66d9ef">return</span> sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(vector1, vector2))
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sigmoid</span>(x):
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> exp(<span style="color:#f92672">-</span>x))
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_neuron</span>(weights, inputs):
+    bias <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#75715e"># for this example we&#39;ll use a constant bias of 1</span>
+    input_with_bias <span style="color:#f92672">=</span> inputs <span style="color:#f92672">+</span> bias <span style="color:#75715e"># making a list with inputs and bias</span>
+    <span style="color:#66d9ef">return</span> sigmoid(dot(weights, input_with_bias))
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_network</span>(layers, input):
+    outputs <span style="color:#f92672">=</span> []
+
+    <span style="color:#66d9ef">for</span> layer <span style="color:#f92672">in</span> layers:
+        output <span style="color:#f92672">=</span> [compute_neuron(neuron_weights, input) <span style="color:#66d9ef">for</span> neuron_weights <span style="color:#f92672">in</span> layer]
+        outputs<span style="color:#f92672">.</span>append(output)
+        input <span style="color:#f92672">=</span> output
+
+    <span style="color:#66d9ef">return</span> outputs
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compute_xor</span>(value_a, value_b):
+    layers <span style="color:#f92672">=</span> [
+
+        <span style="color:#75715e"># hidden layer</span>
+        [[<span style="color:#ae81ff">20.</span>, <span style="color:#ae81ff">20.</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">30</span>], [<span style="color:#ae81ff">20.</span>, <span style="color:#ae81ff">20.</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">10.</span>]],
+
+        <span style="color:#75715e"># output layer</span>
+        [[<span style="color:#f92672">-</span><span style="color:#ae81ff">60.</span>, <span style="color:#ae81ff">60.</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">30.</span>]]
+
+    ]
+
+    outputs <span style="color:#f92672">=</span> compute_network(layers, [value_a, value_b])
+    last_output <span style="color:#f92672">=</span> outputs[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>]
+
+    <span style="color:#66d9ef">return</span> round(last_output)
+
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 XOR 0: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 XOR 0: 0</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;0 XOR 1: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 0 XOR 1: 1</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 XOR 0: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 XOR 0: 1</span>
+print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;1 XOR 1: </span><span style="color:#e6db74">{</span>compute_xor(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) <span style="color:#75715e"># prints 1 XOR 1: 0</span>
+</code></pre></div><p>We’ve successfully built a neural network to solve the XOR problem, demonstrating how adding layers and using the right
 activation functions can tackle non-linear challenges.</p>
 <p>This shows how even simple neural networks can handle tricky problems, paving the way for more complex applications.</p>
 <h2 id="sources">Sources</h2>

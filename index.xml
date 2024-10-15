@@ -6,126 +6,197 @@
     <description>Recent content on Learning Deep Learning</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Sep 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://learningdeeplearning.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Vector Databases (with Chroma)</title>
+      <link>https://learningdeeplearning.com/post/understanding-vector-databases-with-chroma/</link>
+      <pubDate>Tue, 15 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://learningdeeplearning.com/post/understanding-vector-databases-with-chroma/</guid>
+      <description>In this article, we will dive into how vector databases work, exploring Chroma and its underlying search library, hnswlib, along with understanding embeddings and embeddings models.
+Most of the article will focus understanding things conceptually, what&amp;rsquo;s discussed here should help you understand how other vector database work too.
+Since few might read this other than myself (right?), I&amp;rsquo;ll take the liberty to add a pinch of philosophy and linguistics before getting into the technical nitty-gritty.</description>
+    </item>
+    
     <item>
       <title>Some Keras Snippets</title>
       <link>https://learningdeeplearning.com/post/some-keras-snippets/</link>
       <pubDate>Sat, 28 Sep 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/some-keras-snippets/</guid>
-      <description>Here are some useful snippets that I&amp;rsquo;ve been using pretty much every time I play with Keras.&#xA;Visualizing the model You can get a model summary directly in the CLI, listing its layers, shapes, and parameters:&#xA;model.summary() Output:&#xA;┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓ ┃ Layer (type) ┃ Output Shape ┃ Param # ┃ ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩ │ scale_to_0_1_range (Rescaling) │ (None, 784) │ 0 │ ├─────────────────────────────────┼────────────────────────┼───────────────┤ │ hidden_1 (Dense) │ (None, 300) │ 235,500 │ ├─────────────────────────────────┼────────────────────────┼───────────────┤ │ hidden_2 (Dense) │ (None, 100) │ 30,100 │ ├─────────────────────────────────┼────────────────────────┼───────────────┤ │ output (Dense) │ (None, 10) │ 1,010 │ └─────────────────────────────────┴────────────────────────┴───────────────┘ Total params: 266,610 (1.</description>
+      <description>Here are some useful snippets that I&amp;rsquo;ve been using pretty much every time I play with Keras.
+Visualizing the model You can get a model summary directly in the CLI, listing its layers, shapes, and parameters:
+model.summary() Output:
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓ ┃ Layer (type) ┃ Output Shape ┃ Param # ┃ ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩ │ scale_to_0_1_range (Rescaling) │ (None, 784) │ 0 │ ├─────────────────────────────────┼────────────────────────┼───────────────┤ │ hidden_1 (Dense) │ (None, 300) │ 235,500 │ ├─────────────────────────────────┼────────────────────────┼───────────────┤ │ hidden_2 (Dense) │ (None, 100) │ 30,100 │ ├─────────────────────────────────┼────────────────────────┼───────────────┤ │ output (Dense) │ (None, 10) │ 1,010 │ └─────────────────────────────────┴────────────────────────┴───────────────┘ Total params: 266,610 (1.</description>
     </item>
+    
     <item>
       <title>Profiling CUDA Calls</title>
       <link>https://learningdeeplearning.com/post/profiling-cuda-calls/</link>
       <pubDate>Wed, 11 Sep 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/profiling-cuda-calls/</guid>
-      <description>Profiling the CUDA calls that occur behind the scenes can help evaluate different approaches and identify performance bottlenecks in GPU-accelerated applications. The NVIDIA Visual Profiler is an easy-to-use tool that enables you to visualize the execution of CUDA kernels and API calls, providing valuable insights for optimizing your code and improving GPU efficiency.&#xA;Running a sample CUDA code First, let&amp;rsquo;s write a basic CUDA program:&#xA;#include &amp;lt;stdio.h&amp;gt; #include &amp;lt;cuda_runtime.h&amp;gt; __global__ void add(int a, int b, int *c) { *c = a + b; } int main() { int a = 1, b = 2, c; int *dev_c; cudaMalloc(&amp;amp;dev_c, sizeof(int)); add&amp;lt;&amp;lt;&amp;lt;1, 1&amp;gt;&amp;gt;&amp;gt;(a, b, dev_c); cudaMemcpy(&amp;amp;c, dev_c, sizeof(int), cudaMemcpyDeviceToHost); printf(&amp;#34;%d + %d is %d\n&amp;#34;, a, b, c); cudaFree(dev_c); return 0; } Compiling it:</description>
+      <description>Profiling the CUDA calls that occur behind the scenes can help evaluate different approaches and identify performance bottlenecks in GPU-accelerated applications. The NVIDIA Visual Profiler is an easy-to-use tool that enables you to visualize the execution of CUDA kernels and API calls, providing valuable insights for optimizing your code and improving GPU efficiency.
+Running a sample CUDA code First, let&amp;rsquo;s write a basic CUDA program:
+#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;cuda_runtime.h&amp;gt; __global__ void add(int a, int b, int *c) { *c = a + b; } int main() { int a = 1, b = 2, c; int *dev_c; cudaMalloc(&amp;amp;dev_c, sizeof(int)); add&amp;lt;&amp;lt;&amp;lt;1, 1&amp;gt;&amp;gt;&amp;gt;(a, b, dev_c); cudaMemcpy(&amp;amp;c, dev_c, sizeof(int), cudaMemcpyDeviceToHost); printf(&amp;#34;%d + %d is %d\n&amp;#34;, a, b, c); cudaFree(dev_c); return 0; } Compiling it:</description>
     </item>
+    
     <item>
       <title>\&#34;tensor\&#34;\?</title>
       <link>https://learningdeeplearning.com/post/tensor/</link>
       <pubDate>Tue, 03 Sep 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/tensor/</guid>
-      <description>A tensor is a mathematical object that encompass scalars, vectors, and matrices, and arrays of even higher dimensions:&#xA;0-dimensional tensor (scalar): 123 1-dimensional tensor: [1, 2, 3] 2-dimensional tensor: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] 3-dimensional tensor: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]] N-dimensional tensor: &amp;hellip; Tensors are used to represent data like 2D images (height and width), 3D videos (height, width, and time), 4D tensor for a sequence of 3D images (height, width, depth, and time), &amp;hellip;</description>
+      <description>A tensor is a mathematical object that encompass scalars, vectors, and matrices, and arrays of even higher dimensions:
+ 0-dimensional tensor (scalar): 123 1-dimensional tensor: [1, 2, 3] 2-dimensional tensor: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] 3-dimensional tensor: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]] N-dimensional tensor: &amp;hellip;  Tensors are used to represent data like 2D images (height and width), 3D videos (height, width, and time), 4D tensor for a sequence of 3D images (height, width, depth, and time), &amp;hellip;</description>
     </item>
+    
     <item>
       <title>Computing Logic Gates with Perceptrons</title>
       <link>https://learningdeeplearning.com/post/computing-logic-gates-with-perceptrons/</link>
       <pubDate>Fri, 30 Aug 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/computing-logic-gates-with-perceptrons/</guid>
-      <description>This article explores the perceptron algorithm, focusing on how it computes rather than how it learns. We will start by briefly mentioning its creator, followed by a close examination how the algorithm works. To conclude, we will add a hidden layer and connect the neurons making a network, that will then implement the non-linear XOR gate.&#xA;An idea from the 1950s Frank Rosenblatt developed the Perceptron in 1958, an early artificial neuron model that mimicked the computational processes of biological neurons.</description>
+      <description>This article explores the perceptron algorithm, focusing on how it computes rather than how it learns. We will start by briefly mentioning its creator, followed by a close examination how the algorithm works. To conclude, we will add a hidden layer and connect the neurons making a network, that will then implement the non-linear XOR gate.
+An idea from the 1950s Frank Rosenblatt developed the Perceptron in 1958, an early artificial neuron model that mimicked the computational processes of biological neurons.</description>
     </item>
+    
     <item>
       <title>Prompting Tips</title>
       <link>https://learningdeeplearning.com/post/prompting-tips/</link>
       <pubDate>Wed, 28 Aug 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/prompting-tips/</guid>
-      <description>Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:&#xA;Use clear and direct language: Even though LLMs are impressively &amp;lsquo;human&amp;rsquo;, remember that they are still machines and prefer clear and direct instructions.</description>
+      <description>Prompting LLMs for content generation or answers is here to stay, but its open-ended nature can be both a blessing and a curse. In this article, we’ll show three quick tips to improve your prompting experience, tailoring the output to your desire from the very first message sent to the model:
+ Use clear and direct language: Even though LLMs are impressively &amp;lsquo;human&amp;rsquo;, remember that they are still machines and prefer clear and direct instructions.</description>
     </item>
+    
     <item>
       <title>Training, Validation, and Test Datasets</title>
       <link>https://learningdeeplearning.com/post/training-validation-and-test-datasets/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/training-validation-and-test-datasets/</guid>
-      <description>You may have come across the terms &amp;ldquo;training set&amp;rdquo;, &amp;ldquo;validation set&amp;rdquo;, and &amp;ldquo;test set&amp;rdquo; in the context of machine learning, and it might not be immediately clear what distinguishes them, particularly the difference between the validation and test sets. Fortunately, the distinction is straightforward once you understand the roles each plays in the model development process.&#xA;Training Dataset The training dataset is the portion of the dataset used to train the model.</description>
+      <description>You may have come across the terms &amp;ldquo;training set&amp;rdquo;, &amp;ldquo;validation set&amp;rdquo;, and &amp;ldquo;test set&amp;rdquo; in the context of machine learning, and it might not be immediately clear what distinguishes them, particularly the difference between the validation and test sets. Fortunately, the distinction is straightforward once you understand the roles each plays in the model development process.
+Training Dataset The training dataset is the portion of the dataset used to train the model.</description>
     </item>
+    
     <item>
       <title>Debugging and Monitoring Ollama Usage</title>
       <link>https://learningdeeplearning.com/post/debugging-and-monitoring-ollama-usage/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/debugging-and-monitoring-ollama-usage/</guid>
-      <description>Ollama is such a nice backend for running LLMs on your own, you can get it up and running in a single command, and right after it&amp;rsquo;s done, you can pull and chat with different models in no time.&#xA;While getting it up and running requires pretty much no configuration, debugging and monitoring it&amp;rsquo;s not as obvious. Here are some things I&amp;rsquo;ve been doing myself on that regard.&#xA;Keep an eye on htop and nvtop The first suggestion is pretty basic: keep an eye on CPU and GPU usage while Ollama is generating text.</description>
+      <description>Ollama is such a nice backend for running LLMs on your own, you can get it up and running in a single command, and right after it&amp;rsquo;s done, you can pull and chat with different models in no time.
+While getting it up and running requires pretty much no configuration, debugging and monitoring it&amp;rsquo;s not as obvious. Here are some things I&amp;rsquo;ve been doing myself on that regard.
+Keep an eye on htop and nvtop The first suggestion is pretty basic: keep an eye on CPU and GPU usage while Ollama is generating text.</description>
     </item>
+    
     <item>
       <title>LLM Inference as a Service</title>
       <link>https://learningdeeplearning.com/post/llm-inference-as-a-service/</link>
       <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/llm-inference-as-a-service/</guid>
-      <description>Just like other &amp;ldquo;as-a-service&amp;rdquo; offerings, LLMs are following the trend, with multiple providers stepping up to simplify their use and integration. Running large language models on your own can be complex—they typically require GPUs and constantly evolving libraries and models. Leveraging a provider that offers out-of-the-box inference can remove much of the incidental complexity, allowing you to focus on what’s essential for your use case.&#xA;Pricing comparison (July 2024) Here&amp;rsquo;s a bird&amp;rsquo;s-eye view of some top LLM service providers and their pricing:</description>
+      <description>Just like other &amp;ldquo;as-a-service&amp;rdquo; offerings, LLMs are following the trend, with multiple providers stepping up to simplify their use and integration. Running large language models on your own can be complex—they typically require GPUs and constantly evolving libraries and models. Leveraging a provider that offers out-of-the-box inference can remove much of the incidental complexity, allowing you to focus on what’s essential for your use case.
+Pricing comparison (July 2024) Here&amp;rsquo;s a bird&amp;rsquo;s-eye view of some top LLM service providers and their pricing:</description>
     </item>
+    
     <item>
       <title>Download .gguf Models From Ollama Library</title>
       <link>https://learningdeeplearning.com/post/download-gguf-models-from-ollama-library/</link>
       <pubDate>Fri, 26 Jul 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/download-gguf-models-from-ollama-library/</guid>
-      <description>GGUF is the model format required by tools based on llama.cpp (such as koboldcpp). But how do we get models in this format?&#xA;One way to go is by downloading it directly from Hugging Face, but unfortunately, there aren’t many .gguf models there; the majority are .safetensors. While we can convert it, it&amp;rsquo;s more convenient to get it directly in the desired format.&#xA;But Hugging Face is not the only repository for open models.</description>
+      <description>GGUF is the model format required by tools based on llama.cpp (such as koboldcpp). But how do we get models in this format?
+One way to go is by downloading it directly from Hugging Face, but unfortunately, there aren’t many .gguf models there; the majority are .safetensors. While we can convert it, it&amp;rsquo;s more convenient to get it directly in the desired format.
+But Hugging Face is not the only repository for open models.</description>
     </item>
+    
     <item>
       <title>Using Local LLMs With ChatGPT-like UI (Open WebUI)</title>
       <link>https://learningdeeplearning.com/post/local-chatgpt-like-ui-open-webui/</link>
       <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/local-chatgpt-like-ui-open-webui/</guid>
-      <description>Working with Ollama on the CLI is great, but the comfort of a fully-featured web UI can be nice too. There are many front-ends for chatting with LLMs, and today we will take a look at using Open WebUI, which strives to mimic the ChatGPT experience.&#xA;Prompting on terminal with Ollama As mentioned in the introduction, we will be using Ollama for this tutorial. Make sure it’s installed and that you are able to chat with a model:</description>
+      <description>Working with Ollama on the CLI is great, but the comfort of a fully-featured web UI can be nice too. There are many front-ends for chatting with LLMs, and today we will take a look at using Open WebUI, which strives to mimic the ChatGPT experience.
+Prompting on terminal with Ollama As mentioned in the introduction, we will be using Ollama for this tutorial. Make sure it’s installed and that you are able to chat with a model:</description>
     </item>
+    
     <item>
       <title>Deep Learning on Arc A770 &#43; Ubuntu 22.04</title>
       <link>https://learningdeeplearning.com/post/deep-learning-on-arc-a770-ubuntu-22-04/</link>
       <pubDate>Fri, 19 Jul 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/deep-learning-on-arc-a770-ubuntu-22-04/</guid>
-      <description>The graphics processor consumer market is no longer dominated by the two-brand dispute of NVIDIA&amp;rsquo;s GeForce vs AMD&amp;rsquo;s Radeon. In 2022, a third contender entered the ring: Intel&amp;rsquo;s Arc.&#xA;It is still a relatively unknown option to most desktop enthusiasts, which may explain why it is priced lower than its competitors. For folks like me, trying to get as much VRAM as possible on a budget, is hard to dismiss.</description>
+      <description>The graphics processor consumer market is no longer dominated by the two-brand dispute of NVIDIA&amp;rsquo;s GeForce vs AMD&amp;rsquo;s Radeon. In 2022, a third contender entered the ring: Intel&amp;rsquo;s Arc.
+It is still a relatively unknown option to most desktop enthusiasts, which may explain why it is priced lower than its competitors. For folks like me, trying to get as much VRAM as possible on a budget, is hard to dismiss.</description>
     </item>
+    
     <item>
       <title>Deep Learning on RX 7600 &#43; Ubuntu 22.04</title>
       <link>https://learningdeeplearning.com/post/deep-learning-on-rx7600-ubuntu-22-04/</link>
       <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/deep-learning-on-rx7600-ubuntu-22-04/</guid>
-      <description>When it comes to deep learning, choosing the right hardware is important. It&amp;rsquo;s not ideal for the job, but I already had a budget-friendly RX 7600 video card from AMD. While AMD video cards can be challenging to set up with deep learning tools, I&amp;rsquo;m pleased to report that the situation is improving.&#xA;Note that the RX 7600 is not officially listed in the ROCm (Radeon Open Compute) support list.</description>
+      <description>When it comes to deep learning, choosing the right hardware is important. It&amp;rsquo;s not ideal for the job, but I already had a budget-friendly RX 7600 video card from AMD. While AMD video cards can be challenging to set up with deep learning tools, I&amp;rsquo;m pleased to report that the situation is improving.
+Note that the RX 7600 is not officially listed in the ROCm (Radeon Open Compute) support list. Despite this, I managed to get everything up and running smoothly on Ubuntu 22.</description>
     </item>
+    
     <item>
       <title>Why GPUs Are Faster Than CPUs</title>
       <link>https://learningdeeplearning.com/post/why-gpus-are-faster-than-cpus/</link>
       <pubDate>Sat, 29 Jun 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/why-gpus-are-faster-than-cpus/</guid>
-      <description>They are not!&#xA;CPUs typically have higher clock speeds than GPUs. For instance, AMD&amp;rsquo;s Ryzen processors nearly reach 4 GHz, while NVIDIA&amp;rsquo;s GeForce 40 series barely reach 2.5 GHz. Although clock speed is a factor, it&amp;rsquo;s not always the most important aspect of a chip. Often, the capability to handle large volumes of computation simultaneously outweighs the processing speed.&#xA;The answer is straightforward:&#xA;GPUs excel in computing more data per tick of their clock in comparison to CPUs, thanks to their multiple cores and SIMD instructions.</description>
+      <description>They are not!
+CPUs typically have higher clock speeds than GPUs. For instance, AMD&amp;rsquo;s Ryzen processors nearly reach 4 GHz, while NVIDIA&amp;rsquo;s GeForce 40 series barely reach 2.5 GHz. Although clock speed is a factor, it&amp;rsquo;s not always the most important aspect of a chip. Often, the capability to handle large volumes of computation simultaneously outweighs the processing speed.
+The answer is straightforward:
+GPUs excel in computing more data per tick of their clock in comparison to CPUs, thanks to their multiple cores and SIMD instructions.</description>
     </item>
+    
     <item>
       <title>Safetensors vs GGUF</title>
       <link>https://learningdeeplearning.com/post/safetensors-vs-gguf/</link>
       <pubDate>Mon, 24 Jun 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/safetensors-vs-gguf/</guid>
-      <description>There are two popular formats found in the wild when getting a Llama 3 model: .safetensors and .gguf extension. Let&amp;rsquo;s get Llama 3 with both formats, analyze them, and perform inference on it (generate some text with it) using the most popular library for each format, covering:&#xA;Getting Llama 3 from Meta website Converting .pth to .safetensors Safetensors origins Safetensors data format Safetensors inference (with HF&amp;rsquo;s transformers) Converting .safetensors to .</description>
+      <description>There are two popular formats found in the wild when getting a Llama 3 model: .safetensors and .gguf extension. Let&amp;rsquo;s get Llama 3 with both formats, analyze them, and perform inference on it (generate some text with it) using the most popular library for each format, covering:
+ Getting Llama 3 from Meta website Converting .pth to .safetensors Safetensors origins Safetensors data format Safetensors inference (with HF&amp;rsquo;s transformers) Converting .safetensors to .</description>
     </item>
+    
     <item>
       <title>A Heretical Theory No Longer</title>
       <link>https://learningdeeplearning.com/post/a-heretical-theory-no-longer/</link>
       <pubDate>Sun, 16 Jun 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/a-heretical-theory-no-longer/</guid>
-      <description>When talking about Artificial Intelligence, Turing&amp;rsquo;s name mostly comes due to its &amp;ldquo;Turing Test&amp;rdquo;, which is easily dismissed or even made fun of:&#xA;But Turing thoughts on thinking machines are not as superficial as it may seem at first glance.&#xA;&amp;ldquo;something very close to thinking&amp;rdquo; Back in 1951, Alan Turing gave a presentation arguing against the claim that &amp;ldquo;you cannot make a machine think for you&amp;rdquo;. Titled as &amp;ldquo;A Heretical Theory&amp;rdquo;, it&amp;rsquo;s interesting to see how things changed, what was heretical some decades ago is now what&amp;rsquo;s in vogue.</description>
+      <description>When talking about Artificial Intelligence, Turing&amp;rsquo;s name mostly comes due to its &amp;ldquo;Turing Test&amp;rdquo;, which is easily dismissed or even made fun of:
+But Turing thoughts on thinking machines are not as superficial as it may seem at first glance.
+&amp;ldquo;something very close to thinking&amp;rdquo; Back in 1951, Alan Turing gave a presentation arguing against the claim that &amp;ldquo;you cannot make a machine think for you&amp;rdquo;. Titled as &amp;ldquo;A Heretical Theory&amp;rdquo;, it&amp;rsquo;s interesting to see how things changed, what was heretical some decades ago is now what&amp;rsquo;s in vogue.</description>
     </item>
+    
     <item>
       <title>Understanding Advance Vector Extensions (AVX)</title>
       <link>https://learningdeeplearning.com/post/understanding-advance-vector-extensions-avx/</link>
       <pubDate>Sat, 15 Jun 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/understanding-advance-vector-extensions-avx/</guid>
-      <description>I’ve been playing LLMs locally and an acronym that is a usual suspect on documentation pages is &amp;ldquo;AVX&amp;rdquo;.&#xA;Advanced Vector Extensions is a SIMD extension to x86 architecture. Well, that’s what Wikipedia says anyway.&#xA;Let’s get into this rabbit hole and figure out how AVX relates to LLMs.&#xA;Single Instruction, Multiple Data (SIMD) “Single Instruction, Multiple Data” is one of the best self-explanatory acronyms I’ve seen in a while! It&amp;rsquo;s pretty much what it says, performing a single instruction with a big set of registers:</description>
+      <description>I’ve been playing LLMs locally and an acronym that is a usual suspect on documentation pages is &amp;ldquo;AVX&amp;rdquo;.
+Advanced Vector Extensions is a SIMD extension to x86 architecture. Well, that’s what Wikipedia says anyway.
+Let’s get into this rabbit hole and figure out how AVX relates to LLMs.
+Single Instruction, Multiple Data (SIMD) “Single Instruction, Multiple Data” is one of the best self-explanatory acronyms I’ve seen in a while! It&amp;rsquo;s pretty much what it says, performing a single instruction with a big set of registers:</description>
     </item>
+    
     <item>
       <title>Running custom GGUF models with Ollama</title>
       <link>https://learningdeeplearning.com/post/running-custom-gguf-models-with-ollama/</link>
       <pubDate>Fri, 14 Jun 2024 00:00:00 +0000</pubDate>
+      
       <guid>https://learningdeeplearning.com/post/running-custom-gguf-models-with-ollama/</guid>
-      <description>Ollama is a convenient tool, with a single command it takes care of downloading, running, and putting you on a prompt:&#xA;$ ollama run llama3 pulling manifest pulling 6a0746a1ec1a... 100% ▕████████▏ 4.7 GB pulling 4fa551d4f938... 100% ▕████████▏ 12 KB pulling 8ab4849b038c... 100% ▕████████▏ 254 B pulling 577073ffcc6c... 100% ▕████████▏ 110 B pulling 3f8eb4da87fa... 100% ▕████████▏ 485 B verifying sha256 digest writing manifest removing any unused layers success &amp;gt;&amp;gt;&amp;gt; hello there Hello!</description>
+      <description>Ollama is a convenient tool, with a single command it takes care of downloading, running, and putting you on a prompt:
+$ ollama run llama3 pulling manifest pulling 6a0746a1ec1a... 100% ▕████████▏ 4.7 GB pulling 4fa551d4f938... 100% ▕████████▏ 12 KB pulling 8ab4849b038c... 100% ▕████████▏ 254 B pulling 577073ffcc6c... 100% ▕████████▏ 110 B pulling 3f8eb4da87fa... 100% ▕████████▏ 485 B verifying sha256 digest writing manifest removing any unused layers success &amp;gt;&amp;gt;&amp;gt; hello there Hello!</description>
     </item>
+    
   </channel>
 </rss>
