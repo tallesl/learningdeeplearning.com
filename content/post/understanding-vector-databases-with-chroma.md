@@ -299,6 +299,7 @@ To begin, we’ll set up Chroma and create an empty database. The process is sim
 ```py
 from chromadb import PersistentClient # pip install chromadb
 from chromadb.utils.embedding_functions import OllamaEmbeddingFunction
+
 client = PersistentClient()
 ollama_embedding = OllamaEmbeddingFunction(model_name='nomic-embed-text', url='http://localhost:11434/api/embeddings')
 collection = client.get_or_create_collection(name='runescape_skills', embedding_function=ollama_embedding)
@@ -397,7 +398,7 @@ Here are some topics to go beyond the basics:
 
 ## Alternatives
 
-Some alternatives to ChromaDB (databases):
+Some alternatives to Chroma (databases):
 
 - [Milvus]([https://github.com/milvus-io/milvus](https://github.com/milvus-io/milvus))
 - [Qdrant]([https://github.com/qdrant/qdrant](https://github.com/qdrant/qdrant))
